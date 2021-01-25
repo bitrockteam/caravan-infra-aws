@@ -18,7 +18,8 @@ module "vpc" {
     Project = var.prefix
   }
   vpc_tags = {
-    Name = "${var.prefix}-vpc"
+    Name    = "${var.prefix}-vpc"
+    Project = var.prefix
   }
 }
 

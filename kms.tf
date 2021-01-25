@@ -8,6 +8,7 @@ resource "aws_kms_key" "vault" {
   deletion_window_in_days = 10
 
   tags = {
-    Name = "vault-kms-unseal-${random_pet.env.id}"
+    Name    = "vault-kms-unseal-${random_pet.env.id}"
+    Project = var.prefix
   }
 }
