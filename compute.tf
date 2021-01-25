@@ -1,6 +1,6 @@
 data "aws_ami" "centos7" {
   most_recent = true
-  owners      = ["618624782178"]
+  owners      = ["self"]
 
   filter {
     name   = "state"
@@ -45,7 +45,6 @@ resource "aws_key_pair" "hashicorp-keypair" {
 }
 
 resource "aws_instance" "hashicorp_cluster" {
-  depends_on = [module.vpc]
   count      = var.cluster_instance_count
 
   ami           = data.aws_ami.centos7.id
