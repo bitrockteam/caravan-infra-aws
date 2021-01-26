@@ -23,12 +23,25 @@ module "vault_cluster_agents" {
   ssh_timeout      = "240s"
 }
 
-# module "consul-cluster" {
-#   source                   = "git::ssh://git@github.com/bitrockteam/hashicorp-consul-baseline//modules/consul-cluster?ref=master"
-#   ssh_private_key          = var.ssh_private_key
-#   cluster_nodes_ids        = var.cluster_nodes_ids
-#   cluster_nodes            = var.cluster_nodes
-#   cluster_nodes_public_ips = var.cluster_nodes_public_ips
-#   vault_address            = module.vault_cluster.vault_address
-#   dc_name                  = var.dc_name
-# }
+module "consul-cluster" {
+  source                   = "git::ssh://git@github.com/bitrockteam/hashicorp-consul-baseline//modules/consul-cluster?ref=master"
+  ssh_private_key          = tls_private_key.ssh-key.private_key_pem
+  cluster_nodes_ids        = [for n in aws_instance.hashicorp_cluster : n.tags["Name"]]
+  cluster_nodes            = { for n in aws_instance.hashicorp_cluster : n.tags["Name"] => n.private_ip }
+  cluster_nodes_public_ips = { for n in aws_instance.hashicorp_cluster : n.tags["Name"] => n.public_ip }
+  vault_address            = module.vault_cluster.vault_address
+  dc_name                  = var.dc_name
+}
+
+module "nomad-cluster" {
+  pre13_depends_on = [
+    module.vault_cluster,
+    module.consul-cluster
+  ]
+  source                   = "git::ssh://git@github.com/bitrockteam/hashicorp-nomad-baseline//modules/nomad-cluster?ref=master"
+  ssh_private_key          = tls_private_key.ssh-key.private_key_pem
+  cluster_nodes_ids        = [for n in aws_instance.hashicorp_cluster : n.tags["Name"]]
+  cluster_nodes            = { for n in aws_instance.hashicorp_cluster : n.tags["Name"] => n.private_ip }
+  cluster_nodes_public_ips = { for n in aws_instance.hashicorp_cluster : n.tags["Name"] => n.public_ip }
+  dc_name                  = var.dc_name
+}
