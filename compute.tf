@@ -82,17 +82,17 @@ resource "aws_launch_template" "hashicorp-workers" {
   ]
 
   user_data = module.cloud-init.worker_plane_user_data
-  tags = {  
-    Name    = "hashicorp-worker"
+  tags = {
+    Name = "hashicorp-worker"
   }
 }
 
 resource "aws_autoscaling_group" "hashicorp_workers" {
-  desired_capacity   = 3
-  max_size           = 3
-  min_size           = 1
+  desired_capacity = 3
+  max_size         = 3
+  min_size         = 1
 
-  vpc_zone_identifier  = module.vpc.public_subnets
+  vpc_zone_identifier = module.vpc.public_subnets
 
   launch_template {
     id      = aws_launch_template.hashicorp-workers.id
@@ -100,8 +100,8 @@ resource "aws_autoscaling_group" "hashicorp_workers" {
   }
 
   tag {
-    key = "Project"
-    value = var.prefix
+    key                 = "Project"
+    value               = var.prefix
     propagate_at_launch = true
   }
 
@@ -112,4 +112,17 @@ resource "aws_autoscaling_group" "hashicorp_workers" {
     }
     triggers = ["tag"]
   }
+}
+
+module "vault_cluster" {
+  source                   = "git::ssh://git@github.com/bitrockteam/hashicorp-vault-baseline//modules/cluster-raft?ref=master"
+  cluster_nodes_ids        = [for n in aws_instance.hashicorp_cluster : n.tags["Name"]]
+  cluster_nodes            = { for n in aws_instance.hashicorp_cluster : n.tags["Name"] => n.private_ip }
+  cluster_nodes_public_ips = { for n in aws_instance.hashicorp_cluster : n.tags["Name"] => n.public_ip }
+  ssh_private_key          = tls_private_key.ssh-key.private_key_pem
+  ssh_user                 = "centos"
+  ssh_timeout              = "240s"
+  unseal_type              = "aws"
+  aws_kms_region           = var.region
+  aws_kms_key_id           = aws_kms_key.vault.id
 }
