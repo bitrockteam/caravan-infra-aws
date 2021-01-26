@@ -44,160 +44,6 @@ resource "aws_key_pair" "hashicorp-keypair" {
   public_key = tls_private_key.ssh-key.public_key_openssh
 }
 
-data "cloudinit_config" "agents-configs" {
-  gzip = true
-  base64_encode = true
-  
-  part {
-    content_type = "text/x-shellscript"
-    content = file("${path.module}/scripts/startup-script.sh")
-    filename = "startup-script.sh"
-  }
-
-  part {
-    content_type = "text/cloud-config"
-    content      = <<EOF
-#cloud-config
-write_files:
-  - content: |
-      ${base64encode(templatefile("${path.module}/files/agent.hcl.tpl",
-  {
-    vault_endpoint      = "test:8200"
-    tcp_listener        = "127.0.0.1:8200"
-    tcp_listener_tls    = false
-  }
-))},
-    encoding: b64
-    owner: root:root
-    path: /etc/vault.d/agent.hcl
-    permissions: '0750'
-EOF
-  }
-
-  part {
-    content_type = "text/cloud-config"
-    content      = <<EOF
-#cloud-config
-write_files:
-  - content: |
-      ${base64encode(templatefile("${path.module}/files/consul-agent.hcl.tmpl",
-  {
-    cluster_nodes = {for n in aws_instance.hashicorp_cluster: n.tags["Name"] => n.private_ip},
-    dc_name       = var.dc_name
-  }
-))},
-    encoding: b64
-    owner: root:root
-    path: /etc/consul.d/consul-agent.hcl
-    permissions: '0750'
-EOF
-  }
-
-  part {
-    content_type = "text/cloud-config"
-    content      = <<EOF
-#cloud-config
-write_files:
-  - content: |
-      ${base64encode(file("${path.module}/files/ca.tmpl"))},
-    encoding: b64
-    owner: root:root
-    path: /etc/consul.d/ca.tmpl
-    permissions: '0750'
-EOF
-  }
-
-  part {
-    content_type = "text/cloud-config"
-    content      = <<EOF
-#cloud-config
-write_files:
-  - content: |
-      ${base64encode(file("${path.module}/files/cert.tmpl"))},
-    encoding: b64
-    owner: root:root
-    path: /etc/consul.d/cert.tmpl
-    permissions: '0750'
-EOF
-  }
-  
-  part {
-    content_type = "text/cloud-config"
-    content      = <<EOF
-#cloud-config
-write_files:
-  - content: |
-      ${base64encode(file("${path.module}/files/keyfile.tmpl"))},
-    encoding: b64
-    owner: root:root
-    path: /etc/consul.d/keyfile.tmpl
-    permissions: '0750'
-EOF
-  }
-
-  part {
-    content_type = "text/cloud-config"
-    content      = <<EOF
-#cloud-config
-write_files:
-  - content: |
-      ${base64encode(templatefile("${path.module}/files/nomad-client.hcl.tmpl",
-  {
-    cluster_nodes = {},
-    dc_name       = var.dc_name
-    envoy_proxy_image = "asfdas"
-  }
-))},
-    encoding: b64
-    owner: root:root
-    path: /etc/nomad.d/nomad-client.hcl
-    permissions: '0750'
-EOF
-  }
-
-  part {
-    content_type = "text/cloud-config"
-    content      = <<EOF
-#cloud-config
-write_files:
-  - content: |
-      ${base64encode(file("${path.module}/files/nomad-ca.tmpl"))},
-    encoding: b64
-    owner: root:root
-    path: /etc/nomad.d/nomad_ca.tmpl
-    permissions: '0750'
-EOF
-  }
-
-  part {
-    content_type = "text/cloud-config"
-    content      = <<EOF
-#cloud-config
-write_files:
-  - content: |
-      ${base64encode(file("${path.module}/files/nomad-cert.tmpl"))},
-    encoding: b64
-    owner: root:root
-    path: /etc/nomad.d/nomad_cert.tmpl
-    permissions: '0750'
-EOF
-  }
-  
-  part {
-    content_type = "text/cloud-config"
-    content      = <<EOF
-#cloud-config
-write_files:
-  - content: |
-      ${base64encode(file("${path.module}/files/nomad-keyfile.tmpl"))},
-    encoding: b64
-    owner: root:root
-    path: /etc/nomad.d/nomad_keyfile.tmpl
-    permissions: '0750'
-EOF
-  }
-}
-
 resource "aws_instance" "hashicorp_cluster" {
   count = var.cluster_instance_count
 
@@ -206,12 +52,7 @@ resource "aws_instance" "hashicorp_cluster" {
   subnet_id     = module.vpc.public_subnets[count.index]
   key_name      = aws_key_pair.hashicorp-keypair.key_name
 
-  # user_data = data.cloudinit_config.startup-script.rendered
-
-  # network_interface {
-  #   network_interface_id = aws_network_interface.private_ip[count.index].id
-  #   device_index = 0
-  # }
+  user_data = module.cloud-init.control_plane_user_data
 
   vpc_security_group_ids = [
     aws_security_group.allow_cluster_ssh.id,
@@ -231,7 +72,44 @@ resource "aws_instance" "hashicorp_cluster" {
   }
 }
 
-# resource "aws_network_interface" "private_ip" {
-#   count = var.cluster_instance_count
-#   subnet_id       = module.vpc.public_subnets[count.index]
-# }
+resource "aws_launch_template" "hashicorp-workers" {
+  image_id      = data.aws_ami.centos7.id
+  instance_type = "t3.small"
+  key_name      = aws_key_pair.hashicorp-keypair.key_name
+
+  vpc_security_group_ids = [
+    aws_security_group.allow_cluster_ssh.id,
+  ]
+
+  user_data = module.cloud-init.worker_plane_user_data
+  tags = {  
+    Name    = "hashicorp-worker"
+  }
+}
+
+resource "aws_autoscaling_group" "hashicorp_workers" {
+  desired_capacity   = 3
+  max_size           = 3
+  min_size           = 1
+
+  vpc_zone_identifier  = module.vpc.public_subnets
+
+  launch_template {
+    id      = aws_launch_template.hashicorp-workers.id
+    version = aws_launch_template.hashicorp-workers.latest_version
+  }
+
+  tag {
+    key = "Project"
+    value = var.prefix
+    propagate_at_launch = true
+  }
+
+  instance_refresh {
+    strategy = "Rolling"
+    preferences {
+      min_healthy_percentage = 50
+    }
+    triggers = ["tag"]
+  }
+}
