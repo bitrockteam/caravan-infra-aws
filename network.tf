@@ -87,7 +87,7 @@ resource "aws_security_group" "hashicorp_cluster" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = [module.vpc.vpc_cidr_block]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
