@@ -113,16 +113,3 @@ resource "aws_autoscaling_group" "hashicorp_workers" {
     triggers = ["tag"]
   }
 }
-
-module "vault_cluster" {
-  source                   = "git::ssh://git@github.com/bitrockteam/hashicorp-vault-baseline//modules/cluster-raft?ref=master"
-  cluster_nodes_ids        = [for n in aws_instance.hashicorp_cluster : n.tags["Name"]]
-  cluster_nodes            = { for n in aws_instance.hashicorp_cluster : n.tags["Name"] => n.private_ip }
-  cluster_nodes_public_ips = { for n in aws_instance.hashicorp_cluster : n.tags["Name"] => n.public_ip }
-  ssh_private_key          = tls_private_key.ssh-key.private_key_pem
-  ssh_user                 = "centos"
-  ssh_timeout              = "240s"
-  unseal_type              = "aws"
-  aws_kms_region           = var.region
-  aws_kms_key_id           = aws_kms_key.vault.id
-}
