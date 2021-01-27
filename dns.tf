@@ -25,7 +25,7 @@ resource "aws_route53_record" "vault_cname" {
   type    = "CNAME"
   ttl     = "5"
 
-  records        = [aws_lb.hashicorp-alb.dns_name]
+  records = [aws_lb.hashicorp-alb.dns_name]
 }
 resource "aws_route53_record" "consul_cname" {
   zone_id = aws_route53_zone.hashicorp-zone.zone_id
@@ -33,7 +33,7 @@ resource "aws_route53_record" "consul_cname" {
   type    = "CNAME"
   ttl     = "5"
 
-  records        = [aws_lb.hashicorp-alb.dns_name]
+  records = [aws_lb.hashicorp-alb.dns_name]
 }
 resource "aws_route53_record" "nomad_cname" {
   zone_id = aws_route53_zone.hashicorp-zone.zone_id
@@ -41,7 +41,7 @@ resource "aws_route53_record" "nomad_cname" {
   type    = "CNAME"
   ttl     = "5"
 
-  records        = [aws_lb.hashicorp-alb.dns_name]
+  records = [aws_lb.hashicorp-alb.dns_name]
 }
 
 resource "aws_route53_record" "all_cname" {
@@ -50,5 +50,5 @@ resource "aws_route53_record" "all_cname" {
   type    = "CNAME"
   ttl     = "5"
 
-  records        = [aws_lb.hashicorp-alb.dns_name]
+  records = [aws_lb.hashicorp-alb.dns_name]
 }

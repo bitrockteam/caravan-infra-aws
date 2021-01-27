@@ -9,7 +9,6 @@ data "aws_iam_policy_document" "assume_role" {
     }
   }
 }
-
 data "aws_iam_policy_document" "vault-kms-unseal" {
   statement {
     sid       = "VaultKMSUnseal"
@@ -24,25 +23,35 @@ data "aws_iam_policy_document" "vault-kms-unseal" {
   }
 }
 
-resource "aws_iam_role" "cluster-role" {
-  name               = "vault-kms-role-${random_pet.env.id}"
+// aws_iam_role
+resource "aws_iam_role" "control_plane" {
+  name               = "control-plane-${random_pet.env.id}"
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+}
+resource "aws_iam_role" "worker_plane" {
+  name               = "worker-plane-${random_pet.env.id}"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
-resource "aws_iam_role_policy" "vault-kms-unseal" {
-  name   = "Vault-KMS-Unseal-${random_pet.env.id}"
-  role   = aws_iam_role.cluster-role.id
+// aws_iam_instance_profile
+resource "aws_iam_instance_profile" "control_plane" {
+  name = "control-plane-${random_pet.env.id}"
+  role = aws_iam_role.control_plane.name
+}
+resource "aws_iam_instance_profile" "worker_plane" {
+  name = "worker-plane-${random_pet.env.id}"
+  role = aws_iam_role.worker_plane.name
+}
+
+// aws_iam_role_policy
+resource "aws_iam_role_policy" "vault_kms_unseal" {
+  name   = "vault-kms-unseal-${random_pet.env.id}"
+  role   = aws_iam_role.control_plane.id
   policy = data.aws_iam_policy_document.vault-kms-unseal.json
 }
-
-resource "aws_iam_instance_profile" "vault-kms-unseal" {
-  name = "vault-kms-unseal-${random_pet.env.id}"
-  role = aws_iam_role.cluster-role.name
-}
-
-resource "aws_iam_role_policy" "control_plane_policy" {
-  name = "control_plane_policy"
-  role = aws_iam_role.cluster-role.name
+resource "aws_iam_role_policy" "vault_aws_auth" {
+  name = "control-plane-policy"
+  role = aws_iam_role.control_plane.name
 
   policy = <<-EOF
   {

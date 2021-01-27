@@ -24,7 +24,7 @@ module "vpc" {
 }
 
 resource "aws_lb" "hashicorp-alb" {
-  name               = "tehashicorp-alb"
+  name               = "hashicorp-alb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb_security.id]
@@ -59,8 +59,8 @@ resource "tls_private_key" "cert_private_key" {
 }
 
 resource "aws_acm_certificate" "cert" {
-  private_key      = tls_private_key.cert_private_key.private_key_pem
-  certificate_body = module.terraform-acme-le.certificate_pem
+  private_key       = tls_private_key.cert_private_key.private_key_pem
+  certificate_body  = module.terraform-acme-le.certificate_pem
   certificate_chain = module.terraform-acme-le.issuer_pem
 
   tags = {
@@ -90,8 +90,8 @@ resource "aws_lb_target_group" "hashicorp-target-group-vault" {
 
   health_check {
     protocol = "HTTP"
-    matcher = "200"
-    path = "/v1/sys/leader"
+    matcher  = "200"
+    path     = "/v1/sys/leader"
   }
 
   tags = {
@@ -106,8 +106,8 @@ resource "aws_lb_target_group" "hashicorp-target-group-consul" {
 
   health_check {
     protocol = "HTTP"
-    matcher = "200"
-    path = "/v1/sys/leader"
+    matcher  = "200"
+    path     = "/v1/sys/leader"
   }
 
   tags = {
@@ -122,8 +122,8 @@ resource "aws_lb_target_group" "hashicorp-target-group-nomad" {
 
   health_check {
     protocol = "HTTP"
-    matcher = "200"
-    path = "/v1/sys/leader"
+    matcher  = "200"
+    path     = "/v1/sys/leader"
   }
 
   tags = {

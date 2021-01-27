@@ -52,7 +52,7 @@ resource "aws_instance" "hashicorp_cluster" {
   subnet_id     = module.vpc.public_subnets[count.index]
   key_name      = aws_key_pair.hashicorp-keypair.key_name
 
-  user_data = module.cloud-init.control_plane_user_data
+  user_data = module.cloud_init_control_plane.control_plane_user_data
 
   vpc_security_group_ids = [
     aws_security_group.allow_cluster_ssh.id,
@@ -64,7 +64,7 @@ resource "aws_instance" "hashicorp_cluster" {
 
   associate_public_ip_address = true
   ebs_optimized               = false
-  iam_instance_profile        = aws_iam_instance_profile.vault-kms-unseal.id
+  iam_instance_profile        = aws_iam_instance_profile.control_plane.id
 
   tags = {
     Name    = format("clustnode%.2d", count.index + 1)
@@ -72,16 +72,20 @@ resource "aws_instance" "hashicorp_cluster" {
   }
 }
 
-resource "aws_launch_template" "hashicorp-workers" {
+resource "aws_launch_template" "hashicorp_workers" {
   image_id      = data.aws_ami.centos7.id
   instance_type = "t3.small"
   key_name      = aws_key_pair.hashicorp-keypair.key_name
+
+  iam_instance_profile {
+    name = aws_iam_instance_profile.worker_plane.name
+  }
 
   vpc_security_group_ids = [
     aws_security_group.allow_cluster_ssh.id,
   ]
 
-  user_data = module.cloud-init.worker_plane_user_data
+  user_data = module.cloud_init_worker_plane.worker_plane_user_data
   tags = {
     Name = "hashicorp-worker"
   }
@@ -97,8 +101,8 @@ resource "aws_autoscaling_group" "hashicorp_workers" {
   target_group_arns = [aws_lb_target_group.hashicorp-target-group-ingress.arn]
 
   launch_template {
-    id      = aws_launch_template.hashicorp-workers.id
-    version = aws_launch_template.hashicorp-workers.latest_version
+    id      = aws_launch_template.hashicorp_workers.id
+    version = aws_launch_template.hashicorp_workers.latest_version
   }
 
   tag {
