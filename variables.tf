@@ -31,5 +31,29 @@ variable "vpc_public_subnets" {
   default = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
 }
 variable "dc_name" {
+  type    = string
   default = "aws_dc"
+}
+variable "le_endpoint" {
+  type = string
+}
+variable "external_domain" {
+  type    = string
+  default = ""
+}
+variable "ca_certs" {
+  type = map(object({
+    filename = string
+    pemurl   = string
+  }))
+  default = {
+    fakeleintermediatex1 = {
+      filename = "fakeleintermediatex1.pem"
+      pemurl   = "https://letsencrypt.org/certs/fakeleintermediatex1.pem"
+    },
+    fakelerootx1 = {
+      filename = "fakelerootx1.pem"
+      pemurl   = "https://letsencrypt.org/certs/fakelerootx1.pem"
+    }
+  }
 }
