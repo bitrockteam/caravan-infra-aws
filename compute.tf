@@ -94,6 +94,8 @@ resource "aws_autoscaling_group" "hashicorp_workers" {
 
   vpc_zone_identifier = module.vpc.public_subnets
 
+  target_group_arns = [aws_lb_target_group.hashicorp-target-group-ingress.arn]
+
   launch_template {
     id      = aws_launch_template.hashicorp-workers.id
     version = aws_launch_template.hashicorp-workers.latest_version
