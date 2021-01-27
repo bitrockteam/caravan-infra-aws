@@ -23,159 +23,189 @@ module "vpc" {
   }
 }
 
-resource "aws_security_group" "allow_cluster_ssh" {
-  name        = join("_", [var.prefix, "hashicorp_cluster_ssh_in"])
-  description = "Allow Hashicorp Cluster Traffic"
-  vpc_id      = module.vpc.vpc_id
+resource "aws_lb" "hashicorp-alb" {
+  name               = "tehashicorp-alb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.alb_security.id]
+  subnets            = module.vpc.public_subnets
 
-  ingress {
-    from_port   = -1
-    to_port     = -1
-    protocol    = "icmp"
-    description = "ping"
-    cidr_blocks = var.personal_ip_list
-  }
-
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    description = "ssh internal"
-    cidr_blocks = var.personal_ip_list
-  }
+  enable_deletion_protection = false
 
   tags = {
-    Name    = join("_", [var.prefix, "hashicorp_cluster_ssh_in"])
     Project = var.prefix
   }
 }
 
-resource "aws_security_group" "hashicorp_cluster" {
-  name        = join("_", [var.prefix, "hashicorp_cluster_in"])
-  description = "Allow Hashicorp Cluster Traffic"
-  vpc_id      = module.vpc.vpc_id
+// aws_lb_listener
+resource "aws_lb_listener" "hashicorp-listener-80" {
+  load_balancer_arn = aws_lb.hashicorp-alb.arn
+  port              = "80"
+  protocol          = "HTTP"
 
-  ingress {
-    from_port   = 8200
-    to_port     = 8200
-    protocol    = "tcp"
-    cidr_blocks = [module.vpc.vpc_cidr_block]
-  }
+  default_action {
+    type = "redirect"
 
-  ingress {
-    from_port   = 8300
-    to_port     = 8300
-    protocol    = "tcp"
-    cidr_blocks = [module.vpc.vpc_cidr_block]
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
   }
+}
 
-  ingress {
-    from_port   = 8500
-    to_port     = 8500
-    protocol    = "tcp"
-    cidr_blocks = [module.vpc.vpc_cidr_block]
-  }
+resource "tls_private_key" "cert_private_key" {
+  algorithm = "RSA"
+}
 
-  ingress {
-    from_port   = 4646
-    to_port     = 4646
-    protocol    = "tcp"
-    cidr_blocks = [module.vpc.vpc_cidr_block]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+resource "aws_acm_certificate" "cert" {
+  private_key      = tls_private_key.cert_private_key.private_key_pem
+  certificate_body = module.terraform-acme-le.certificate_pem
+  certificate_chain = module.terraform-acme-le.issuer_pem
 
   tags = {
-    Name    = join("_", [var.prefix, "hashicorp_cluster_in"])
     Project = var.prefix
   }
-
 }
 
+resource "aws_lb_listener" "hashicorp-listener-443" {
+  load_balancer_arn = aws_lb.hashicorp-alb.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = aws_acm_certificate.cert.arn
 
-resource "aws_security_group" "hashicorp_internal_vault" {
-  name        = join("_", [var.prefix, "hashicorp_internal_vault_in"])
-  description = "Allow Hashicorp Vault Internal Traffic"
-  vpc_id      = module.vpc.vpc_id
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.hashicorp-target-group-ingress.arn
+  }
+}
 
-  ingress {
-    from_port   = 8201
-    to_port     = 8201
-    protocol    = "tcp"
-    cidr_blocks = [module.vpc.vpc_cidr_block]
+// aws_lb_target_group
+resource "aws_lb_target_group" "hashicorp-target-group-vault" {
+  name     = "hashicorp-target-group-vault"
+  port     = 8200
+  protocol = "HTTP"
+  vpc_id   = module.vpc.vpc_id
+
+  health_check {
+    protocol = "HTTP"
+    matcher = "200"
+    path = "/v1/sys/leader"
   }
 
   tags = {
-    Name      = join("_", [var.prefix, "hashicorp_cluster_in"])
-    Project   = var.prefix
-    Component = "vault"
+    Project = var.prefix
   }
-
 }
-resource "aws_security_group" "hashicorp_internal_consul" {
-  name        = join("_", [var.prefix, "hashicorp_internal_consul_in"])
-  description = "Allow Hashicorp Consul Internal Traffic"
-  vpc_id      = module.vpc.vpc_id
+resource "aws_lb_target_group" "hashicorp-target-group-consul" {
+  name     = "hashicorp-target-group-consul"
+  port     = 8500
+  protocol = "HTTP"
+  vpc_id   = module.vpc.vpc_id
 
-  ingress {
-    from_port   = 8301
-    to_port     = 8301
-    protocol    = "tcp"
-    cidr_blocks = [module.vpc.vpc_cidr_block]
-  }
-  ingress {
-    from_port   = 8302
-    to_port     = 8302
-    protocol    = "tcp"
-    cidr_blocks = [module.vpc.vpc_cidr_block]
-  }
-  ingress {
-    from_port   = 8502
-    to_port     = 8502
-    protocol    = "tcp"
-    cidr_blocks = [module.vpc.vpc_cidr_block]
+  health_check {
+    protocol = "HTTP"
+    matcher = "200"
+    path = "/v1/sys/leader"
   }
 
   tags = {
-    Name      = join("_", [var.prefix, "hashicorp_cluster_in"])
-    Project   = var.prefix
-    Component = "consul"
+    Project = var.prefix
   }
-
 }
-resource "aws_security_group" "hashicorp_internal_nomad" {
-  name        = join("_", [var.prefix, "hashicorp_internal_nomad_in"])
-  description = "Allow Hashicorp Nomad Internal Traffic"
-  vpc_id      = module.vpc.vpc_id
+resource "aws_lb_target_group" "hashicorp-target-group-nomad" {
+  name     = "hashicorp-target-group-nomad"
+  port     = 4646
+  protocol = "HTTP"
+  vpc_id   = module.vpc.vpc_id
 
-  ingress {
-    from_port   = 4646
-    to_port     = 4646
-    protocol    = "tcp"
-    cidr_blocks = [module.vpc.vpc_cidr_block]
-  }
-  ingress {
-    from_port   = 4647
-    to_port     = 4647
-    protocol    = "tcp"
-    cidr_blocks = [module.vpc.vpc_cidr_block]
-  }
-  ingress {
-    from_port   = 4648
-    to_port     = 4648
-    protocol    = "tcp"
-    cidr_blocks = [module.vpc.vpc_cidr_block]
+  health_check {
+    protocol = "HTTP"
+    matcher = "200"
+    path = "/v1/sys/leader"
   }
 
   tags = {
-    Name      = join("_", [var.prefix, "hashicorp_cluster_in"])
-    Project   = var.prefix
-    Component = "nomad"
+    Project = var.prefix
+  }
+}
+resource "aws_lb_target_group" "hashicorp-target-group-ingress" {
+  name     = "hashicorp-target-group-ingress"
+  port     = 8080
+  protocol = "HTTP"
+  vpc_id   = module.vpc.vpc_id
+
+  tags = {
+    Project = var.prefix
+  }
+}
+
+// aws_lb_target_group_attachment
+resource "aws_lb_target_group_attachment" "hashicorp-tga-vault" {
+  count            = var.cluster_instance_count
+  target_group_arn = aws_lb_target_group.hashicorp-target-group-vault.arn
+  target_id        = aws_instance.hashicorp_cluster[count.index].id
+  port             = 8200
+}
+resource "aws_lb_target_group_attachment" "hashicorp-tga-consul" {
+  count            = var.cluster_instance_count
+  target_group_arn = aws_lb_target_group.hashicorp-target-group-consul.arn
+  target_id        = aws_instance.hashicorp_cluster[count.index].id
+  port             = 8500
+}
+resource "aws_lb_target_group_attachment" "hashicorp-tga-nomad" {
+  count            = var.cluster_instance_count
+  target_group_arn = aws_lb_target_group.hashicorp-target-group-nomad.arn
+  target_id        = aws_instance.hashicorp_cluster[count.index].id
+  port             = 4646
+}
+
+// aws_lb_listener_rule
+resource "aws_lb_listener_rule" "host_routing_vault" {
+  listener_arn = aws_lb_listener.hashicorp-listener-443.arn
+  priority     = 99
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.hashicorp-target-group-vault.arn
   }
 
+  condition {
+    host_header {
+      values = ["vault.${var.prefix}.${var.external_domain}"]
+    }
+  }
+}
+
+resource "aws_lb_listener_rule" "host_routing_consul" {
+  listener_arn = aws_lb_listener.hashicorp-listener-443.arn
+  priority     = 100
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.hashicorp-target-group-consul.arn
+  }
+
+  condition {
+    host_header {
+      values = ["consul.${var.prefix}.${var.external_domain}"]
+    }
+  }
+}
+
+resource "aws_lb_listener_rule" "host_routing_nomad" {
+  listener_arn = aws_lb_listener.hashicorp-listener-443.arn
+  priority     = 101
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.hashicorp-target-group-nomad.arn
+  }
+
+  condition {
+    host_header {
+      values = ["nomad.${var.prefix}.${var.external_domain}"]
+    }
+  }
 }
