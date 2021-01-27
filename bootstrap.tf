@@ -35,7 +35,7 @@ module "consul-cluster" {
 }
 
 module "nomad-cluster" {
-  pre13_depends_on = [
+  depends_on = [
     module.vault_cluster,
     module.consul-cluster
   ]
