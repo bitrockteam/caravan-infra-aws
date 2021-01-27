@@ -9,6 +9,7 @@ module "vault_cluster" {
   unseal_type              = "aws"
   aws_kms_region           = var.region
   aws_kms_key_id           = aws_kms_key.vault.id
+  prefix                   = var.prefix
 }
 
 module "vault_cluster_agents" {
