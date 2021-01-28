@@ -13,7 +13,7 @@ module "vault_cluster" {
 }
 
 module "vault_cluster_agents" {
-  source           = "git::ssh://git@github.com/bitrockteam/hashicorp-vault-baseline//modules/agent?ref=master"
+  source           = "git::ssh://git@github.com/bitrockteam/hashicorp-vault-baseline//modules/agent?ref=feature/refactoring"
   vault_endpoint   = "http://127.0.0.1:8200"
   tcp_listener_tls = false
   nodes_ids        = [for n in aws_instance.hashicorp_cluster : n.tags["Name"]]
@@ -22,6 +22,8 @@ module "vault_cluster_agents" {
   ssh_private_key  = tls_private_key.ssh-key.private_key_pem
   ssh_user         = "centos"
   ssh_timeout      = "240s"
+  aws_auto_auth    = true
+  aws_node_role    = local.control_plane_role_name
 }
 
 module "consul-cluster" {

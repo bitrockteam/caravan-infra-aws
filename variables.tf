@@ -32,7 +32,11 @@ variable "vpc_public_subnets" {
 }
 variable "dc_name" {
   type    = string
-  default = "aws_dc"
+  default = "aws-dc"
+  validation {
+    condition = can(regex("^([a-z0-9]+(-[a-z0-9]+)*)+$", var.dc_name))
+    error_message = "Invalid dc_name. Must contain letters, numbers and hyphen."
+  }
 }
 variable "le_endpoint" {
   type = string

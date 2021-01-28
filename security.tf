@@ -183,6 +183,12 @@ resource "aws_security_group" "hashicorp_internal_consul" {
     cidr_blocks = [module.vpc.vpc_cidr_block]
   }
   ingress {
+    from_port   = 8501
+    to_port     = 8501
+    protocol    = "tcp"
+    cidr_blocks = [module.vpc.vpc_cidr_block]
+  }
+  ingress {
     from_port   = 8502
     to_port     = 8502
     protocol    = "tcp"
