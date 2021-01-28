@@ -23,6 +23,18 @@ data "aws_iam_policy_document" "vault-kms-unseal" {
   }
 }
 
+data "aws_iam_policy_document" "vault_client" {
+  statement {
+    sid    = "VaultClient"
+    effect = "Allow"
+
+    actions = ["ec2:DescribeInstances"]
+
+    resources = ["*"]
+  }
+}
+
+
 // aws_iam_role
 resource "aws_iam_role" "control_plane" {
   name               = "control-plane-${random_pet.env.id}"
@@ -83,4 +95,10 @@ resource "aws_iam_role_policy" "vault_aws_auth" {
     ]
   }
   EOF
+}
+
+resource "aws_iam_role_policy" "vault_client" {
+  name   = "vault-client-${random_pet.env.id}"
+  role   = aws_iam_role.worker_plane.name
+  policy = data.aws_iam_policy_document.vault_client.json
 }

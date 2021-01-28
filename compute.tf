@@ -83,6 +83,7 @@ resource "aws_launch_template" "hashicorp_workers" {
 
   vpc_security_group_ids = [
     aws_security_group.allow_cluster_ssh.id,
+    aws_security_group.allow_outgoing_all.id
   ]
 
   user_data = module.cloud_init_worker_plane.worker_plane_user_data

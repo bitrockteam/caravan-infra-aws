@@ -20,4 +20,5 @@ bootstrap_state_backend_provider = "aws"
 auth_providers = ["aws", "gsuite"]
 bootstrap_state_bucket_name_prefix = "hashicorp-terraform-infra-aws"
 bootstrap_state_object_name_prefix = "infraboot/terraform/state"
+s3_bootstrap_region = "${region}"
 #############

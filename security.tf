@@ -26,6 +26,32 @@ resource "aws_security_group" "allow_cluster_ssh" {
   }
 }
 
+resource "aws_security_group" "allow_outgoing_all" {
+  name        = join("_", [var.prefix, "hashicorp_outgoing_all"])
+  description = "Allow Outgoing Traffic"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    from_port   = -1
+    to_port     = -1
+    protocol    = "icmp"
+    description = "ping"
+    cidr_blocks = var.personal_ip_list
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name    = join("_", [var.prefix, "hashicorp_outgoing_all"])
+    Project = var.prefix
+  }
+}
+
 resource "aws_security_group" "hashicorp_cluster" {
   name        = join("_", [var.prefix, "hashicorp_cluster_in"])
   description = "Allow Hashicorp Cluster Traffic"
