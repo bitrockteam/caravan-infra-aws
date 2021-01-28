@@ -1,3 +1,8 @@
+locals {
+  control_plane_role_name = "control-plane"
+  worker_plane_role_name  = "worker-plane"
+}
+
 module "cloud_init_control_plane" {
   source         = "git::ssh://git@github.com/bitrockteam/hashicorp-terraform-cloudinit"
   cluster_nodes  = { for n in aws_instance.hashicorp_cluster : n.tags["Name"] => n.private_ip }
@@ -5,7 +10,7 @@ module "cloud_init_control_plane" {
   dc_name        = var.dc_name
   auto_auth_type = "aws"
   aws_region     = var.region
-  aws_node_role  = "control_plane"
+  aws_node_role  = local.control_plane_role_name
 }
 
 module "cloud_init_worker_plane" {
@@ -15,5 +20,5 @@ module "cloud_init_worker_plane" {
   dc_name        = var.dc_name
   auto_auth_type = "aws"
   aws_region     = var.region
-  aws_node_role  = "worker_plane"
+  aws_node_role  = local.worker_plane_role_name
 }
