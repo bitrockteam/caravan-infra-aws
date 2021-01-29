@@ -3,7 +3,7 @@ module "vault_cluster" {
   cluster_nodes_ids        = [for n in aws_instance.hashicorp_cluster : n.tags["Name"]]
   cluster_nodes            = { for n in aws_instance.hashicorp_cluster : n.tags["Name"] => n.private_ip }
   cluster_nodes_public_ips = { for n in aws_instance.hashicorp_cluster : n.tags["Name"] => n.public_ip }
-  ssh_private_key          = tls_private_key.ssh-key.private_key_pem
+  ssh_private_key          = tls_private_key.ssh_key.private_key_pem
   ssh_user                 = "centos"
   ssh_timeout              = "240s"
   unseal_type              = "aws"
@@ -19,16 +19,16 @@ module "vault_cluster_agents" {
   nodes_ids        = [for n in aws_instance.hashicorp_cluster : n.tags["Name"]]
   nodes            = { for n in aws_instance.hashicorp_cluster : n.tags["Name"] => n.private_ip }
   nodes_public_ips = { for n in aws_instance.hashicorp_cluster : n.tags["Name"] => n.public_ip }
-  ssh_private_key  = tls_private_key.ssh-key.private_key_pem
+  ssh_private_key  = tls_private_key.ssh_key.private_key_pem
   ssh_user         = "centos"
   ssh_timeout      = "240s"
   aws_auto_auth    = true
   aws_node_role    = local.control_plane_role_name
 }
 
-module "consul-cluster" {
+module "consul_cluster" {
   source                   = "git::ssh://git@github.com/bitrockteam/hashicorp-consul-baseline//modules/consul-cluster?ref=master"
-  ssh_private_key          = tls_private_key.ssh-key.private_key_pem
+  ssh_private_key          = tls_private_key.ssh_key.private_key_pem
   cluster_nodes_ids        = [for n in aws_instance.hashicorp_cluster : n.tags["Name"]]
   cluster_nodes            = { for n in aws_instance.hashicorp_cluster : n.tags["Name"] => n.private_ip }
   cluster_nodes_public_ips = { for n in aws_instance.hashicorp_cluster : n.tags["Name"] => n.public_ip }
@@ -36,13 +36,13 @@ module "consul-cluster" {
   dc_name                  = var.dc_name
 }
 
-module "nomad-cluster" {
+module "nomad_cluster" {
   depends_on = [
     module.vault_cluster,
-    module.consul-cluster
+    module.consul_cluster
   ]
   source                   = "git::ssh://git@github.com/bitrockteam/hashicorp-nomad-baseline//modules/nomad-cluster?ref=master"
-  ssh_private_key          = tls_private_key.ssh-key.private_key_pem
+  ssh_private_key          = tls_private_key.ssh_key.private_key_pem
   cluster_nodes_ids        = [for n in aws_instance.hashicorp_cluster : n.tags["Name"]]
   cluster_nodes            = { for n in aws_instance.hashicorp_cluster : n.tags["Name"] => n.private_ip }
   cluster_nodes_public_ips = { for n in aws_instance.hashicorp_cluster : n.tags["Name"] => n.public_ip }

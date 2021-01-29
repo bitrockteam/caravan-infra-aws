@@ -9,7 +9,7 @@ data "aws_iam_policy_document" "assume_role" {
     }
   }
 }
-data "aws_iam_policy_document" "vault-kms-unseal" {
+data "aws_iam_policy_document" "vault_kms_unseal" {
   statement {
     sid       = "VaultKMSUnseal"
     effect    = "Allow"
@@ -59,7 +59,7 @@ resource "aws_iam_instance_profile" "worker_plane" {
 resource "aws_iam_role_policy" "vault_kms_unseal" {
   name   = "vault-kms-unseal-${random_pet.env.id}"
   role   = aws_iam_role.control_plane.id
-  policy = data.aws_iam_policy_document.vault-kms-unseal.json
+  policy = data.aws_iam_policy_document.vault_kms_unseal.json
 }
 resource "aws_iam_role_policy" "vault_aws_auth" {
   name = "control-plane-policy"

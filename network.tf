@@ -23,11 +23,11 @@ module "vpc" {
   }
 }
 
-resource "aws_lb" "hashicorp-alb" {
+resource "aws_lb" "hashicorp_alb" {
   name               = "hashicorp-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.alb_security.id]
+  security_groups    = [aws_security_group.alb.id]
   subnets            = module.vpc.public_subnets
 
   enable_deletion_protection = false
@@ -38,8 +38,8 @@ resource "aws_lb" "hashicorp-alb" {
 }
 
 // aws_lb_listener
-resource "aws_lb_listener" "hashicorp-listener-80" {
-  load_balancer_arn = aws_lb.hashicorp-alb.arn
+resource "aws_lb_listener" "http_80" {
+  load_balancer_arn = aws_lb.hashicorp_alb.arn
   port              = "80"
   protocol          = "HTTP"
 
@@ -60,16 +60,16 @@ resource "tls_private_key" "cert_private_key" {
 
 resource "aws_acm_certificate" "cert" {
   private_key       = tls_private_key.cert_private_key.private_key_pem
-  certificate_body  = module.terraform-acme-le.certificate_pem
-  certificate_chain = module.terraform-acme-le.issuer_pem
+  certificate_body  = module.terraform_acme_le.certificate_pem
+  certificate_chain = module.terraform_acme_le.issuer_pem
 
   tags = {
     Project = var.prefix
   }
 }
 
-resource "aws_lb_listener" "hashicorp-listener-443" {
-  load_balancer_arn = aws_lb.hashicorp-alb.arn
+resource "aws_lb_listener" "https_443" {
+  load_balancer_arn = aws_lb.hashicorp_alb.arn
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
@@ -77,12 +77,12 @@ resource "aws_lb_listener" "hashicorp-listener-443" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.hashicorp-target-group-ingress.arn
+    target_group_arn = aws_lb_target_group.ingress.arn
   }
 }
 
 // aws_lb_target_group
-resource "aws_lb_target_group" "hashicorp-target-group-vault" {
+resource "aws_lb_target_group" "vault" {
   name     = "hashicorp-target-group-vault"
   port     = 8200
   protocol = "HTTP"
@@ -98,7 +98,7 @@ resource "aws_lb_target_group" "hashicorp-target-group-vault" {
     Project = var.prefix
   }
 }
-resource "aws_lb_target_group" "hashicorp-target-group-consul" {
+resource "aws_lb_target_group" "consul" {
   name     = "hashicorp-target-group-consul"
   port     = 8500
   protocol = "HTTP"
@@ -114,7 +114,7 @@ resource "aws_lb_target_group" "hashicorp-target-group-consul" {
     Project = var.prefix
   }
 }
-resource "aws_lb_target_group" "hashicorp-target-group-nomad" {
+resource "aws_lb_target_group" "nomad" {
   name     = "hashicorp-target-group-nomad"
   port     = 4646
   protocol = "HTTP"
@@ -130,7 +130,7 @@ resource "aws_lb_target_group" "hashicorp-target-group-nomad" {
     Project = var.prefix
   }
 }
-resource "aws_lb_target_group" "hashicorp-target-group-ingress" {
+resource "aws_lb_target_group" "ingress" {
   name     = "hashicorp-target-group-ingress"
   port     = 8080
   protocol = "HTTP"
@@ -142,33 +142,33 @@ resource "aws_lb_target_group" "hashicorp-target-group-ingress" {
 }
 
 // aws_lb_target_group_attachment
-resource "aws_lb_target_group_attachment" "hashicorp-tga-vault" {
+resource "aws_lb_target_group_attachment" "vault" {
   count            = var.cluster_instance_count
-  target_group_arn = aws_lb_target_group.hashicorp-target-group-vault.arn
+  target_group_arn = aws_lb_target_group.vault.arn
   target_id        = aws_instance.hashicorp_cluster[count.index].id
   port             = 8200
 }
-resource "aws_lb_target_group_attachment" "hashicorp-tga-consul" {
+resource "aws_lb_target_group_attachment" "consul" {
   count            = var.cluster_instance_count
-  target_group_arn = aws_lb_target_group.hashicorp-target-group-consul.arn
+  target_group_arn = aws_lb_target_group.consul.arn
   target_id        = aws_instance.hashicorp_cluster[count.index].id
   port             = 8500
 }
-resource "aws_lb_target_group_attachment" "hashicorp-tga-nomad" {
+resource "aws_lb_target_group_attachment" "nomad" {
   count            = var.cluster_instance_count
-  target_group_arn = aws_lb_target_group.hashicorp-target-group-nomad.arn
+  target_group_arn = aws_lb_target_group.nomad.arn
   target_id        = aws_instance.hashicorp_cluster[count.index].id
   port             = 4646
 }
 
 // aws_lb_listener_rule
-resource "aws_lb_listener_rule" "host_routing_vault" {
-  listener_arn = aws_lb_listener.hashicorp-listener-443.arn
+resource "aws_lb_listener_rule" "vault" {
+  listener_arn = aws_lb_listener.https_443.arn
   priority     = 99
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.hashicorp-target-group-vault.arn
+    target_group_arn = aws_lb_target_group.vault.arn
   }
 
   condition {
@@ -178,13 +178,13 @@ resource "aws_lb_listener_rule" "host_routing_vault" {
   }
 }
 
-resource "aws_lb_listener_rule" "host_routing_consul" {
-  listener_arn = aws_lb_listener.hashicorp-listener-443.arn
+resource "aws_lb_listener_rule" "consul" {
+  listener_arn = aws_lb_listener.https_443.arn
   priority     = 100
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.hashicorp-target-group-consul.arn
+    target_group_arn = aws_lb_target_group.consul.arn
   }
 
   condition {
@@ -194,13 +194,13 @@ resource "aws_lb_listener_rule" "host_routing_consul" {
   }
 }
 
-resource "aws_lb_listener_rule" "host_routing_nomad" {
-  listener_arn = aws_lb_listener.hashicorp-listener-443.arn
+resource "aws_lb_listener_rule" "nomad" {
+  listener_arn = aws_lb_listener.https_443.arn
   priority     = 101
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.hashicorp-target-group-nomad.arn
+    target_group_arn = aws_lb_target_group.nomad.arn
   }
 
   condition {

@@ -99,7 +99,7 @@ resource "aws_security_group" "hashicorp_cluster" {
 
 }
 
-resource "aws_security_group" "alb_security" {
+resource "aws_security_group" "alb" {
   name        = join("_", [var.prefix, "hashicorp_internal_alb_in"])
   description = "Allow Hashicorp ALB Internal Traffic"
   vpc_id      = module.vpc.vpc_id
@@ -146,7 +146,7 @@ resource "aws_security_group" "alb_security" {
 }
 
 
-resource "aws_security_group" "hashicorp_internal_vault" {
+resource "aws_security_group" "internal_vault" {
   name        = join("_", [var.prefix, "hashicorp_internal_vault_in"])
   description = "Allow Hashicorp Vault Internal Traffic"
   vpc_id      = module.vpc.vpc_id
@@ -165,7 +165,7 @@ resource "aws_security_group" "hashicorp_internal_vault" {
   }
 
 }
-resource "aws_security_group" "hashicorp_internal_consul" {
+resource "aws_security_group" "internal_consul" {
   name        = join("_", [var.prefix, "hashicorp_internal_consul_in"])
   description = "Allow Hashicorp Consul Internal Traffic"
   vpc_id      = module.vpc.vpc_id
@@ -202,7 +202,7 @@ resource "aws_security_group" "hashicorp_internal_consul" {
   }
 
 }
-resource "aws_security_group" "hashicorp_internal_nomad" {
+resource "aws_security_group" "internal_nomad" {
   name        = join("_", [var.prefix, "hashicorp_internal_nomad_in"])
   description = "Allow Hashicorp Nomad Internal Traffic"
   vpc_id      = module.vpc.vpc_id

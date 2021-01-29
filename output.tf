@@ -17,11 +17,11 @@ output "vpc_id" {
   value = module.vpc.vpc_id
 }
 
-output "cluster-public-ips" {
+output "cluster_public_ips" {
   value = { for n in aws_instance.hashicorp_cluster : n.tags["Name"] => n.public_ip }
 }
-output "load-balancer-ip-address" {
-  value = aws_lb.hashicorp-alb.dns_name
+output "load_balancer_ip_address" {
+  value = aws_lb.hashicorp_alb.dns_name
 }
 //output "pd_ssd_jenkins_master_id" {
 //  value = var.gcp_csi ? google_compute_region_disk.jenkins_master[0].id : null
