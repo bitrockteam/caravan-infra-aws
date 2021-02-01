@@ -1,7 +1,7 @@
 module "terraform_acme_le" {
   source         = "git::ssh://git@github.com/bitrockteam/hashicorp-terraform-acme-le?ref=feature/refactoring"
   common_name    = "${var.prefix}.${var.external_domain}"
-  dns_provider   = "route53"
+  dns_provider   = "aws"
   use_le_staging = var.use_le_staging
   private_key    = tls_private_key.cert_private_key.private_key_pem
   aws_region     = var.region
