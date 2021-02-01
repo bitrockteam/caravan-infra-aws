@@ -1,5 +1,5 @@
 module "terraform_acme_le" {
-  source         = "git::ssh://git@github.com/bitrockteam/hashicorp-terraform-acme-le?ref=feature/refactoring"
+  source         = "git::ssh://git@github.com/bitrockteam/hashicorp-terraform-acme-le?ref=master"
   common_name    = "${var.prefix}.${var.external_domain}"
   dns_provider   = "aws"
   use_le_staging = var.use_le_staging
