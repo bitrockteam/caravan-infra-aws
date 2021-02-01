@@ -22,10 +22,10 @@ external_domain         = "my-domain.io"       # an existing route53 public zone
 ```hcl
 terraform {
   backend "s3" {
-    bucket         = "my-bucket"
+    bucket         = "my-bucket"                  # existing S3 bucket
     key            = "path/to/terraform.tfstate"
     region         = "eu-central-1"
-    dynamodb_table = "my-dynamodb-table"
+    dynamodb_table = "my-dynamodb-table"          # existing dynamo db table
   }
 }
 ```
