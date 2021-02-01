@@ -34,12 +34,12 @@ variable "dc_name" {
   type    = string
   default = "aws-dc"
   validation {
-    condition = can(regex("^([a-z0-9]+(-[a-z0-9]+)*)+$", var.dc_name))
+    condition     = can(regex("^([a-z0-9]+(-[a-z0-9]+)*)+$", var.dc_name))
     error_message = "Invalid dc_name. Must contain letters, numbers and hyphen."
   }
 }
-variable "le_endpoint" {
-  type = string
+variable "use_le_staging" {
+  type = bool
 }
 variable "external_domain" {
   type    = string
