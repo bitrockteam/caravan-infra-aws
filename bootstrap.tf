@@ -47,4 +47,5 @@ module "nomad_cluster" {
   cluster_nodes            = { for n in aws_instance.hashicorp_cluster : n.tags["Name"] => n.private_ip }
   cluster_nodes_public_ips = { for n in aws_instance.hashicorp_cluster : n.tags["Name"] => n.public_ip }
   dc_name                  = var.dc_name
+  control_plane_vault_role = local.control_plane_role_name
 }
