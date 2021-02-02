@@ -23,9 +23,9 @@ output "cluster_public_ips" {
 output "load_balancer_ip_address" {
   value = aws_lb.hashicorp_alb.dns_name
 }
-//output "pd_ssd_jenkins_master_id" {
-//  value = var.gcp_csi ? google_compute_region_disk.jenkins_master[0].id : null
-//}
+output "jenkins_master_vol_id" {
+  value = var.aws_csi ? aws_ebs_volume.jenkins[0].id : null
+}
 output "hashicorp_endpoints" {
   value = {
     vault  = "https://vault.${var.prefix}.${var.external_domain}"
