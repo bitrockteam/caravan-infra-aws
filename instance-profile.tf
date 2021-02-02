@@ -102,3 +102,57 @@ resource "aws_iam_role_policy" "vault_client" {
   role   = aws_iam_role.worker_plane.name
   policy = data.aws_iam_policy_document.vault_client.json
 }
+
+resource "aws_iam_role_policy" "csi" {
+  name = "ebs-csi-client"
+  role = aws_iam_role.worker_plane.id
+  policy = <<-EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:AttachVolume",
+        "ec2:CreateSnapshot",
+        "ec2:CreateTags",
+        "ec2:CreateVolume",
+        "ec2:DeleteSnapshot",
+        "ec2:DeleteTags",
+        "ec2:DeleteVolume",
+        "ec2:DescribeAvailabilityZones",
+        "ec2:DescribeInstances",
+        "ec2:DescribeSnapshots",
+        "ec2:DescribeTags",
+        "ec2:DescribeVolumes",
+        "ec2:DescribeVolumesModifications",
+        "ec2:DetachVolume",
+        "ec2:ModifyVolume"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "docker_pull" {
+  policy = <<-EOT
+{
+  "Version": "2008-10-17",
+  "Statement": [
+      {
+          "Sid": "AllowPull",
+          "Effect": "Allow",
+          "Action": [
+              "ecr:GetDownloadUrlForLayer",
+              "ecr:BatchGetImage",
+              "ecr:GetAuthorizationToken"
+          ],
+          "Resource": "*"
+      }
+  ]
+}
+EOT
+  role = aws_iam_role.worker_plane.id
+}
