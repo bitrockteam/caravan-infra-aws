@@ -61,3 +61,8 @@ variable "ca_certs" {
     }
   }
 }
+
+variable "aws_csi" {
+  type = bool
+  description = "provision csi disks"
+}
