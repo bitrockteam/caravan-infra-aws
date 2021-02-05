@@ -104,8 +104,8 @@ resource "aws_iam_role_policy" "vault_client" {
 }
 
 resource "aws_iam_role_policy" "csi" {
-  name = "ebs-csi-client"
-  role = aws_iam_role.worker_plane.id
+  name   = "ebs-csi-client"
+  role   = aws_iam_role.worker_plane.id
   policy = <<-EOF
 {
   "Version": "2012-10-17",
@@ -154,5 +154,5 @@ resource "aws_iam_role_policy" "docker_pull" {
   ]
 }
 EOT
-  role = aws_iam_role.worker_plane.id
+  role   = aws_iam_role.worker_plane.id
 }
