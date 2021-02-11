@@ -233,3 +233,53 @@ resource "aws_security_group" "internal_nomad" {
   }
 
 }
+
+resource "aws_security_group" "internal_workers" {
+  name        = join("_", [var.prefix, "hashicorp_internal_workers"])
+  description = "Allow Hashicorp Workers Internal Traffic"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    from_port   = 9200
+    to_port     = 9200
+    protocol    = "tcp"
+    cidr_blocks = [module.vpc.vpc_cidr_block]
+  }
+  ingress {
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = [module.vpc.vpc_cidr_block]
+  }
+  ingress {
+    from_port   = 16686
+    to_port     = 16686
+    protocol    = "tcp"
+    cidr_blocks = [module.vpc.vpc_cidr_block]
+  }
+  ingress {
+    from_port   = 14250
+    to_port     = 14250
+    protocol    = "tcp"
+    cidr_blocks = [module.vpc.vpc_cidr_block]
+  }
+  ingress {
+    from_port   = 9090
+    to_port     = 9090
+    protocol    = "tcp"
+    cidr_blocks = [module.vpc.vpc_cidr_block]
+  }
+  ingress {
+    from_port   = 50000
+    to_port     = 50000
+    protocol    = "tcp"
+    cidr_blocks = [module.vpc.vpc_cidr_block]
+  }
+
+  tags = {
+    Name      = join("_", [var.prefix, "hashicorp_internal_workers"])
+    Project   = var.prefix
+    Component = "nomad"
+  }
+
+}

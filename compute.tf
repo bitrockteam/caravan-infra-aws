@@ -120,3 +120,31 @@ resource "aws_autoscaling_group" "hashicorp_workers" {
     triggers = ["tag"]
   }
 }
+
+resource "aws_instance" "monitoring" {
+  count = var.enable_monitoring ? 1 : 0
+
+  ami           = data.aws_ami.centos7.id
+  instance_type = "t2.large"
+  subnet_id     = module.vpc.public_subnets[count.index]
+  key_name      = aws_key_pair.hashicorp_keypair.key_name
+
+  user_data = module.cloud_init_worker_plane.monitoring_user_data
+
+  vpc_security_group_ids = [
+    aws_security_group.allow_cluster_ssh.id,
+    aws_security_group.hashicorp_cluster.id,
+    aws_security_group.internal_vault.id,
+    aws_security_group.internal_consul.id,
+    aws_security_group.internal_nomad.id,
+  ]
+
+  associate_public_ip_address = true
+  ebs_optimized               = false
+  iam_instance_profile        = aws_iam_instance_profile.worker_plane.id
+
+  tags = {
+    Name    = "monitoring"
+    Project = var.prefix
+  }
+}
