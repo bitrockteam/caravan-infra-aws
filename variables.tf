@@ -79,13 +79,13 @@ variable "volume_size" {
 }
 variable "control_plane_machine_type" {
   type    = string
-  default = "e2-standard-2"
+  default = "t2.micro"
 }
 variable "worker_plane_machine_type" {
   type    = string
-  default = "n2-standard-2"
+  default = "t3.small"
 }
 variable "monitoring_machine_type" {
   type    = string
-  default = "n2-standard-2"
+  default = "t2.large"
 }
