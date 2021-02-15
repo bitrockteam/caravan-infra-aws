@@ -39,7 +39,7 @@ variable "dc_name" {
   }
 }
 variable "use_le_staging" {
-  type = bool
+  type    = bool
   default = true
 }
 variable "external_domain" {
@@ -66,9 +66,9 @@ variable "ca_certs" {
 variable "aws_csi" {
   type        = bool
   description = "provision csi disks"
-  default = true
+  default     = true
 }
 variable "enable_monitoring" {
-  type = bool
+  type    = bool
   default = true
 }

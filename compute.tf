@@ -93,7 +93,7 @@ resource "aws_launch_template" "hashicorp_workers" {
     device_name = "/dev/sda1"
     ebs {
       delete_on_termination = true
-      volume_size = 100
+      volume_size           = 100
     }
   }
 
@@ -106,7 +106,7 @@ resource "aws_launch_template" "hashicorp_workers" {
   ]
 
   user_data = module.cloud_init_worker_plane.worker_plane_user_data
-  
+
   tag_specifications {
     resource_type = "instance"
     tags = {
