@@ -1,4 +1,4 @@
-module "hashicorp-bootstrap" {
+module "caravan-bootstrap" {
   source                         = "git::ssh://git@github.com/bitrockteam/caravan-bootstrap?ref=main"
   ssh_private_key                = chomp(tls_private_key.ssh_key.private_key_pem)
   ssh_user                       = "centos"
