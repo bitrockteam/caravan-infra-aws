@@ -48,7 +48,7 @@ resource "aws_instance" "hashicorp_cluster" {
   count = var.cluster_instance_count
 
   ami           = data.aws_ami.centos7.id
-  instance_type = "t2.micro"
+  instance_type = var.control_plane_machine_type
   subnet_id     = module.vpc.public_subnets[count.index]
   key_name      = aws_key_pair.hashicorp_keypair.key_name
 
@@ -82,7 +82,7 @@ resource "aws_instance" "hashicorp_cluster" {
 
 resource "aws_launch_template" "hashicorp_workers" {
   image_id      = data.aws_ami.centos7.id
-  instance_type = "t3.small"
+  instance_type = var.worker_plane_machine_type
   key_name      = aws_key_pair.hashicorp_keypair.key_name
 
   iam_instance_profile {
@@ -93,7 +93,7 @@ resource "aws_launch_template" "hashicorp_workers" {
     device_name = "/dev/sda1"
     ebs {
       delete_on_termination = true
-      volume_size           = 100
+      volume_size           = var.volume_size
     }
   }
 
@@ -155,7 +155,7 @@ resource "aws_instance" "monitoring" {
   count = var.enable_monitoring ? 1 : 0
 
   ami           = data.aws_ami.centos7.id
-  instance_type = "t2.large"
+  instance_type = var.monitoring_machine_type
   subnet_id     = module.vpc.public_subnets[count.index]
   key_name      = aws_key_pair.hashicorp_keypair.key_name
 

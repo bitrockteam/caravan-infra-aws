@@ -72,3 +72,20 @@ variable "enable_monitoring" {
   type    = bool
   default = true
 }
+
+variable "volume_size" {
+  type = number
+  default = 100
+}
+variable "control_plane_machine_type" {
+  type    = string
+  default = "e2-standard-2"
+}
+variable "worker_plane_machine_type" {
+  type    = string
+  default = "n2-standard-2"
+}
+variable "monitoring_machine_type" {
+  type    = string
+  default = "n2-standard-2"
+}
