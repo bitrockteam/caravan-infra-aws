@@ -74,7 +74,7 @@ variable "enable_monitoring" {
 }
 
 variable "volume_size" {
-  type = number
+  type    = number
   default = 100
 }
 variable "control_plane_machine_type" {
