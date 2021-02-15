@@ -54,12 +54,20 @@ resource "aws_instance" "hashicorp_cluster" {
 
   user_data = module.cloud_init_control_plane.control_plane_user_data
 
+  root_block_device {
+    delete_on_termination = true
+    tags = {
+      Name    = format("clustnode%.2d", count.index + 1)
+      Project = var.prefix
+    }
+  }
+
   vpc_security_group_ids = [
-    aws_security_group.allow_cluster_ssh.id,
-    aws_security_group.hashicorp_cluster.id,
+    aws_security_group.allow_cluster_basics.id,
     aws_security_group.internal_vault.id,
     aws_security_group.internal_consul.id,
     aws_security_group.internal_nomad.id,
+    aws_security_group.internal_workers.id,
   ]
 
   associate_public_ip_address = true
@@ -81,14 +89,36 @@ resource "aws_launch_template" "hashicorp_workers" {
     name = aws_iam_instance_profile.worker_plane.name
   }
 
+  block_device_mappings {
+    device_name = "/dev/sda1"
+    ebs {
+      delete_on_termination = true
+      volume_size = 100
+    }
+  }
+
   vpc_security_group_ids = [
-    aws_security_group.allow_cluster_ssh.id,
-    aws_security_group.allow_outgoing_all.id
+    aws_security_group.allow_cluster_basics.id,
+    aws_security_group.internal_vault.id,
+    aws_security_group.internal_consul.id,
+    aws_security_group.internal_nomad.id,
+    aws_security_group.internal_workers.id,
   ]
 
   user_data = module.cloud_init_worker_plane.worker_plane_user_data
-  tags = {
-    Name = "hashicorp-worker"
+  
+  tag_specifications {
+    resource_type = "instance"
+    tags = {
+      Name = "hashicorp-worker"
+    }
+  }
+
+  tag_specifications {
+    resource_type = "volume"
+    tags = {
+      Name = "hashicorp-worker"
+    }
   }
 }
 
@@ -131,12 +161,20 @@ resource "aws_instance" "monitoring" {
 
   user_data = module.cloud_init_worker_plane.monitoring_user_data
 
+  root_block_device {
+    delete_on_termination = true
+    tags = {
+      Name    = "monitoring"
+      Project = var.prefix
+    }
+  }
+
   vpc_security_group_ids = [
-    aws_security_group.allow_cluster_ssh.id,
-    aws_security_group.hashicorp_cluster.id,
+    aws_security_group.allow_cluster_basics.id,
     aws_security_group.internal_vault.id,
     aws_security_group.internal_consul.id,
     aws_security_group.internal_nomad.id,
+    aws_security_group.internal_workers.id,
   ]
 
   associate_public_ip_address = true
