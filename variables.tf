@@ -89,3 +89,19 @@ variable "monitoring_machine_type" {
   type    = string
   default = "t2.large"
 }
+
+variable "tfstate_bucket_name" {
+  type        = string
+  default     = ""
+  description = "S3 Bucket where Terraform state is stored"
+}
+variable "tfstate_table_name" {
+  type        = string
+  default     = ""
+  description = "DynamoDB Table where Terraform state lock is acquired"
+}
+variable "tfstate_region" {
+  type        = string
+  default     = ""
+  description = "AWS Region where Terraform state resources are"
+}
