@@ -8,29 +8,22 @@
 aws_access_key_id=AKIAJPZXVYEXAMPLE
 aws_secret_access_key=4k6ZilhMPdshU6/kuwEExAmPlE
 ```
-- Create `aws.tfvars` file with
-```hcl
-region                  = "eu-central-1"       # region of choice
-shared_credentials_file = "~/.aws/credentials" # AWS credentials file path
-awsprofile              = "default"            # AWS credentials profile name
-prefix                  = "hashicorp"          # prefix for resource names
-personal_ip_list        = ["0.0.0.0/0"]        # whitelist ips for remote connection
-use_le_staging          = true                 # whether to use LE staging or production endpoint 
-external_domain         = "my-domain.io"       # an existing route53 public zone. A new zone named ${prefix}.${external_domain} will be created in route53 containing all needed entries
-```
-- Create `backend.tf` file with the chosen Terraform state backend, such as
-```hcl
-terraform {
-  backend "s3" {
-    bucket         = "my-bucket"                  # existing S3 bucket
-    key            = "path/to/terraform.tfstate"
-    region         = "eu-central-1"
-    dynamodb_table = "my-dynamodb-table"          # existing dynamo db table
-  }
-}
+
+## Prepare environment
+
+You need an AWS bucket (and a DynamoDB table) for terraform state, so run the script `project-setup.sh` passing as arguments:
+
+1. Prefix name to give to resources (look at terraform inputs)
+2. AWS region
+3. AWS profile
+
+```bash
+./project-setup.sh <NAME> <REGION> <PROFILE>
 ```
 
 ## Running
+
+Then run:
 
 ```shell
 terraform apply --var-file aws.tfvars
@@ -103,3 +96,11 @@ terraform apply --var-file aws.tfvars
 | worker\_plane\_role\_name | Worker plane role name |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+
+## Cleaning up
+
+After `terraform destroy -var-file=aws.tfvars`, for removing bucket and dynamodb table, run the `project-cleanup.sh` script:
+
+```bash
+./project-cleanup.sh <NAME> <REGION> <PROFILE>
+```
