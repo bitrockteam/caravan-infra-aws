@@ -1,4 +1,4 @@
-# hashicorp-terraform-infra-aws
+# Caravan Infra AWS
 
 ## Prerequisites
 
