@@ -38,38 +38,16 @@ output "worker_node_service_account" {
 }
 
 output "PROJECT_PLATFORM_TFVAR" {
-  value = templatefile("${path.module}/templates/platform-tfvar.tmpl",
-    {
-      prefix                  = var.prefix,
-      external_domain         = var.external_domain,
-      region                  = var.region,
-      dc_name                 = var.dc_name
-      shared_credentials_file = var.shared_credentials_file
-      profile                 = var.awsprofile
-  })
+  value = local.tfvars_platform
 }
 
-//output "PROJECT_APPSUPP_TFVAR" {
-//  value = templatefile("${path.module}/templates/appsupp-tfvar.tmpl",
-//    {
-//      project_id      = var.project_id,
-//      prefix          = var.prefix,
-//      external_domain = var.external_domain,
-//      region          = var.region
-//      dc_name         = var.dc_name
-//  })
-//}
-//
-//output "PROJECT_WORKLOAD_TFVAR" {
-//  value = templatefile("${path.module}/templates/workload-tfvar.tmpl",
-//    {
-//      project_id      = var.project_id,
-//      prefix          = var.prefix,
-//      external_domain = var.external_domain,
-//      region          = var.region
-//      dc_name         = var.dc_name
-//  })
-//}
+output "PROJECT_APPSUPP_TFVAR" {
+  value = local.tfvars_appsupport
+}
+
+output "PROJECT_WORKLOAD_TFVAR" {
+  value = local.tfvars_workload
+}
 
 output "ca_certs" {
   value = "${abspath(path.module)}/ca_certs.pem"
