@@ -143,19 +143,19 @@ resource "aws_lb_target_group" "ingress" {
 
 // aws_lb_target_group_attachment
 resource "aws_lb_target_group_attachment" "vault" {
-  count            = var.cluster_instance_count
+  count            = var.control_plane_instance_count
   target_group_arn = aws_lb_target_group.vault.arn
   target_id        = aws_instance.hashicorp_cluster[count.index].id
   port             = 8200
 }
 resource "aws_lb_target_group_attachment" "consul" {
-  count            = var.cluster_instance_count
+  count            = var.control_plane_instance_count
   target_group_arn = aws_lb_target_group.consul.arn
   target_id        = aws_instance.hashicorp_cluster[count.index].id
   port             = 8500
 }
 resource "aws_lb_target_group_attachment" "nomad" {
-  count            = var.cluster_instance_count
+  count            = var.control_plane_instance_count
   target_group_arn = aws_lb_target_group.nomad.arn
   target_id        = aws_instance.hashicorp_cluster[count.index].id
   port             = 4646

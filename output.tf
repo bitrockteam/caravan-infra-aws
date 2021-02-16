@@ -1,30 +1,38 @@
 output "control_plane_role_name" {
-  value = local.control_plane_role_name
+  value       = local.control_plane_role_name
+  description = "Control plane role name"
 }
 output "worker_plane_role_name" {
-  value = local.worker_plane_role_name
+  value       = local.worker_plane_role_name
+  description = "Worker plane role name"
 }
 output "control_plane_iam_role_arns" {
-  value = [aws_iam_role.control_plane.arn]
+  value       = [aws_iam_role.control_plane.arn]
+  description = "Control plane iam role list"
 }
 output "worker_plane_iam_role_arns" {
-  value = [aws_iam_role.worker_plane.arn]
+  value       = [aws_iam_role.worker_plane.arn]
+  description = "Worker plane iam role list"
 }
 output "region" {
-  value = var.region
+  value       = var.region
+  description = "AWS region"
 }
 output "vpc_id" {
-  value = module.vpc.vpc_id
+  value       = module.vpc.vpc_id
+  description = "VPC ID"
 }
-
 output "cluster_public_ips" {
-  value = { for n in aws_instance.hashicorp_cluster : n.tags["Name"] => n.public_ip }
+  value       = { for n in aws_instance.hashicorp_cluster : n.tags["Name"] => n.public_ip }
+  description = "Control plane public IP addresses"
 }
 output "load_balancer_ip_address" {
-  value = aws_lb.hashicorp_alb.dns_name
+  value       = aws_lb.hashicorp_alb.dns_name
+  description = "Load Balancer IP address"
 }
 output "jenkins_master_vol_id" {
-  value = var.aws_csi ? aws_ebs_volume.jenkins[0].id : null
+  value       = var.aws_csi ? aws_ebs_volume.jenkins[0].id : null
+  description = "EBS Volume ID for Jenkins Master"
 }
 output "hashicorp_endpoints" {
   value = {
@@ -32,23 +40,29 @@ output "hashicorp_endpoints" {
     consul = "https://consul.${var.prefix}.${var.external_domain}"
     nomad  = "https://nomad.${var.prefix}.${var.external_domain}"
   }
+  description = "Hashicorp clusters endpoints"
 }
 output "worker_node_service_account" {
-  value = [aws_iam_role.worker_plane.arn]
+  value       = [aws_iam_role.worker_plane.arn]
+  description = "Worker plane ARN"
 }
 
 output "PROJECT_PLATFORM_TFVAR" {
-  value = local.tfvars_platform
+  value       = local.tfvars_platform
+  description = "Caravan Platform tfvars"
 }
 
 output "PROJECT_APPSUPP_TFVAR" {
-  value = local.tfvars_appsupport
+  value       = local.tfvars_appsupport
+  description = "Caravan Application Support tfvars"
 }
 
 output "PROJECT_WORKLOAD_TFVAR" {
-  value = local.tfvars_workload
+  value       = local.tfvars_workload
+  description = "Caravan Workload tfvars"
 }
 
 output "ca_certs" {
-  value = "${abspath(path.module)}/ca_certs.pem"
+  value       = "${abspath(path.module)}/ca_certs.pem"
+  description = "Let's Encrypt staging CA certificates"
 }

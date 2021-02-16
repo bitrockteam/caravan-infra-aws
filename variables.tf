@@ -1,35 +1,96 @@
-variable "region" {
-  type = string
-}
+# AWS params
 variable "awsprofile" {
-  type = string
-}
-variable "prefix" {
-  type = string
+  type        = string
+  description = "AWS user profile"
 }
 variable "shared_credentials_file" {
-  type = string
+  type        = string
+  description = "AWS credential file path"
+}
+variable "region" {
+  type        = string
+  description = "AWS region to use"
 }
 variable "personal_ip_list" {
-  type = list(string)
+  type        = list(string)
+  description = "IP address list for SSH connection to the VMs"
 }
-variable "cluster_instance_count" {
-  default = 3
+variable "prefix" {
+  type        = string
+  description = "The prefix of the objects' names"
+}
+variable "tfstate_bucket_name" {
+  type        = string
+  default     = ""
+  description = "S3 Bucket where Terraform state is stored"
+}
+variable "tfstate_table_name" {
+  type        = string
+  default     = ""
+  description = "DynamoDB Table where Terraform state lock is acquired"
+}
+variable "tfstate_region" {
+  type        = string
+  default     = ""
+  description = "AWS Region where Terraform state resources are"
+}
+# AWS Compute
+variable "control_plane_instance_count" {
+  type        = number
+  default     = 3
+  description = "Control plane instances number"
 }
 variable "workers_group_size" {
-  default = "3"
+  type        = number
+  default     = 3
+  description = "Worker plane instances number"
 }
+variable "aws_csi" {
+  type        = bool
+  description = "provision csi disks"
+  default     = true
+}
+variable "enable_monitoring" {
+  type        = bool
+  default     = true
+  description = "Enable monitoring"
+}
+variable "volume_size" {
+  type        = number
+  default     = 100
+  description = "Volume size of workers disk"
+}
+variable "control_plane_machine_type" {
+  type        = string
+  default     = "t2.micro"
+  description = "Control plane instance machine type"
+}
+variable "worker_plane_machine_type" {
+  type        = string
+  default     = "t3.small"
+  description = "Working plane instance machine type"
+}
+variable "monitoring_machine_type" {
+  type        = string
+  default     = "t2.large"
+  description = "Monitoring instance machine type"
+}
+# AWS Network
 variable "vpc_cidr" {
-  default = "10.0.0.0/16"
+  default     = "10.0.0.0/16"
+  description = "VPC cidr"
 }
 variable "vpc_private_subnets" {
-  type    = list(string)
-  default = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  type        = list(string)
+  default     = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  description = "VCP private subnets"
 }
 variable "vpc_public_subnets" {
-  type    = list(string)
-  default = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+  type        = list(string)
+  default     = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+  description = "VCP public subnets"
 }
+# Hashicorp params
 variable "dc_name" {
   type    = string
   default = "aws-dc"
@@ -37,14 +98,17 @@ variable "dc_name" {
     condition     = can(regex("^([a-z0-9]+(-[a-z0-9]+)*)+$", var.dc_name))
     error_message = "Invalid dc_name. Must contain letters, numbers and hyphen."
   }
+  description = "Hashicorp cluster name"
 }
 variable "use_le_staging" {
-  type    = bool
-  default = true
+  type        = bool
+  default     = true
+  description = "Use staging Let's Encrypt endpoint"
 }
 variable "external_domain" {
-  type    = string
-  default = ""
+  type        = string
+  default     = ""
+  description = "Domain used for endpoints and certs"
 }
 variable "ca_certs" {
   type = map(object({
@@ -61,47 +125,5 @@ variable "ca_certs" {
       pemurl   = "https://letsencrypt.org/certs/fakelerootx1.pem"
     }
   }
-}
-
-variable "aws_csi" {
-  type        = bool
-  description = "provision csi disks"
-  default     = true
-}
-variable "enable_monitoring" {
-  type    = bool
-  default = true
-}
-
-variable "volume_size" {
-  type    = number
-  default = 100
-}
-variable "control_plane_machine_type" {
-  type    = string
-  default = "t2.micro"
-}
-variable "worker_plane_machine_type" {
-  type    = string
-  default = "t3.small"
-}
-variable "monitoring_machine_type" {
-  type    = string
-  default = "t2.large"
-}
-
-variable "tfstate_bucket_name" {
-  type        = string
-  default     = ""
-  description = "S3 Bucket where Terraform state is stored"
-}
-variable "tfstate_table_name" {
-  type        = string
-  default     = ""
-  description = "DynamoDB Table where Terraform state lock is acquired"
-}
-variable "tfstate_region" {
-  type        = string
-  default     = ""
-  description = "AWS Region where Terraform state resources are"
+  description = "Fake certificates from staging Let's Encrypt"
 }
