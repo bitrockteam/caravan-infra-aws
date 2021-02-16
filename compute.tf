@@ -45,7 +45,7 @@ resource "aws_key_pair" "hashicorp_keypair" {
 }
 
 resource "aws_instance" "hashicorp_cluster" {
-  count = var.cluster_instance_count
+  count = var.control_plane_instance_count
 
   ami           = data.aws_ami.centos7.id
   instance_type = var.control_plane_machine_type
@@ -123,8 +123,8 @@ resource "aws_launch_template" "hashicorp_workers" {
 }
 
 resource "aws_autoscaling_group" "hashicorp_workers" {
-  desired_capacity = 3
-  max_size         = 3
+  desired_capacity = var.workers_group_size
+  max_size         = var.workers_group_size
   min_size         = 1
 
   vpc_zone_identifier = module.vpc.public_subnets
