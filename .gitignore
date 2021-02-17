@@ -87,3 +87,5 @@ files/*.jar
 files/echo-server
 *.pem
 .idea
+destroy.sh
+run.sh
