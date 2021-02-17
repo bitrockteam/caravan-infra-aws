@@ -136,6 +136,11 @@ resource "aws_lb_target_group" "ingress" {
   protocol = "HTTP"
   vpc_id   = module.vpc.vpc_id
 
+  health_check {
+    protocol = "HTTP"
+    matcher  = "200,404"
+  }
+
   tags = {
     Project = var.prefix
   }

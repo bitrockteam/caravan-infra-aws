@@ -80,8 +80,8 @@ terraform apply --var-file aws.tfvars
 | [aws_lb_target_group](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/lb_target_group) |
 | [aws_lb_target_group_attachment](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/lb_target_group_attachment) |
 | [aws_route53_record](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/route53_record) |
-| [aws_route53_zone](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/data-sources/route53_zone) |
 | [aws_route53_zone](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/route53_zone) |
+| [aws_route53_zone](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/data-sources/route53_zone) |
 | [aws_security_group](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/security_group) |
 | [local_file](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) |
 | [null_resource](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) |
