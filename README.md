@@ -23,9 +23,10 @@ You need an AWS bucket (and a DynamoDB table) for terraform state, so run the sc
 
 ## Running
 
-Then run:
+Edit the generate aws.tfvars and then run:
 
 ```shell
+terraform init -reconfigure -upgrade
 terraform apply --var-file aws.tfvars
 ```
 
@@ -52,8 +53,8 @@ terraform apply --var-file aws.tfvars
 | Name | Source | Version |
 |------|--------|---------|
 | caravan-bootstrap | git::ssh://git@github.com/bitrockteam/caravan-bootstrap?ref=main |  |
-| cloud_init_control_plane | git::ssh://git@github.com/bitrockteam/caravan-cloudinit |  |
-| cloud_init_worker_plane | git::ssh://git@github.com/bitrockteam/caravan-cloudinit |  |
+| cloud_init_control_plane | git::ssh://git@github.com/bitrockteam/caravan-cloudinit?ref=main |  |
+| cloud_init_worker_plane | git::ssh://git@github.com/bitrockteam/caravan-cloudinit?ref=main |  |
 | terraform_acme_le | git::ssh://git@github.com/bitrockteam/caravan-acme-le?ref=main |  |
 | vpc | terraform-aws-modules/vpc/aws |  |
 
@@ -92,6 +93,11 @@ terraform apply --var-file aws.tfvars
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | awsprofile | AWS user profile | `string` | n/a | yes |
+| personal\_ip\_list | IP address list for SSH connection to the VMs | `list(string)` | n/a | yes |
+| prefix | The prefix of the objects' names | `string` | n/a | yes |
+| region | AWS region to use | `string` | n/a | yes |
+| shared\_credentials\_file | AWS credential file path | `string` | n/a | yes |
+| ami\_filter\_name | Regexp to find AMI to use built with caravan-baking | `string` | `"*caravan-centos-image-*"` | no |
 | ca\_certs | Fake certificates from staging Let's Encrypt | <pre>map(object({<br>    filename = string<br>    pemurl   = string<br>  }))</pre> | <pre>{<br>  "fakeleintermediatex1": {<br>    "filename": "fakeleintermediatex1.pem",<br>    "pemurl": "https://letsencrypt.org/certs/fakeleintermediatex1.pem"<br>  },<br>  "fakelerootx1": {<br>    "filename": "fakelerootx1.pem",<br>    "pemurl": "https://letsencrypt.org/certs/fakelerootx1.pem"<br>  }<br>}</pre> | no |
 | control\_plane\_instance\_count | Control plane instances number | `number` | `3` | no |
 | control\_plane\_machine\_type | Control plane instance machine type | `string` | `"t2.micro"` | no |
@@ -100,10 +106,6 @@ terraform apply --var-file aws.tfvars
 | enable\_monitoring | Enable monitoring | `bool` | `true` | no |
 | external\_domain | Domain used for endpoints and certs | `string` | `""` | no |
 | monitoring\_machine\_type | Monitoring instance machine type | `string` | `"t2.large"` | no |
-| personal\_ip\_list | IP address list for SSH connection to the VMs | `list(string)` | n/a | yes |
-| prefix | The prefix of the objects' names | `string` | n/a | yes |
-| region | AWS region to use | `string` | n/a | yes |
-| shared\_credentials\_file | AWS credential file path | `string` | n/a | yes |
 | tfstate\_bucket\_name | S3 Bucket where Terraform state is stored | `string` | `""` | no |
 | tfstate\_region | AWS Region where Terraform state resources are | `string` | `""` | no |
 | tfstate\_table\_name | DynamoDB Table where Terraform state lock is acquired | `string` | `""` | no |

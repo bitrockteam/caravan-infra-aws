@@ -35,6 +35,11 @@ variable "tfstate_region" {
   description = "AWS Region where Terraform state resources are"
 }
 # AWS Compute
+variable "ami_filter_name" {
+  type        = string
+  default     = "*caravan-centos-image-*"
+  description = "Regexp to find AMI to use built with caravan-baking"
+}
 variable "control_plane_instance_count" {
   type        = number
   default     = 3

@@ -9,7 +9,7 @@ data "aws_ami" "centos7" {
 
   filter {
     name   = "name"
-    values = ["*hashicorp-centos-image-*"]
+    values = [var.ami_filter_name]
   }
 
   filter {
