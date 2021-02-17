@@ -30,10 +30,6 @@ output "load_balancer_ip_address" {
   value       = aws_lb.hashicorp_alb.dns_name
   description = "Load Balancer IP address"
 }
-output "jenkins_master_vol_id" {
-  value       = var.aws_csi ? aws_ebs_volume.jenkins[0].id : null
-  description = "EBS Volume ID for Jenkins Master"
-}
 output "hashicorp_endpoints" {
   value = {
     vault  = "https://vault.${var.prefix}.${var.external_domain}"
@@ -65,4 +61,8 @@ output "PROJECT_WORKLOAD_TFVAR" {
 output "ca_certs" {
   value       = "${abspath(path.module)}/ca_certs.pem"
   description = "Let's Encrypt staging CA certificates"
+}
+
+output "csi_volumes" {
+  value = local.volumes_name_to_id
 }

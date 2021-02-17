@@ -45,11 +45,22 @@ variable "workers_group_size" {
   default     = 3
   description = "Worker plane instances number"
 }
-variable "aws_csi" {
-  type        = bool
-  description = "provision csi disks"
-  default     = true
+variable "csi_volumes" {
+  type        = map(map(string))
+  default     = {}
+  description = <<EOF
+Example:
+{
+  "jenkins" : {
+    "availability_zone" : "eu-west-1a"
+    "size" : "30"
+    "type" : "gp3"
+    "tags" : { "application": "jenkins_master" }
+  }
 }
+EOF
+}
+
 variable "enable_monitoring" {
   type        = bool
   default     = true
