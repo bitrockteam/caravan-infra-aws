@@ -225,8 +225,8 @@ resource "aws_security_group" "internal_workers" {
     cidr_blocks = [module.vpc.vpc_cidr_block]
   }
   ingress {
-    from_port   = 50000
-    to_port     = 50000
+    from_port   = 20000
+    to_port     = 32000
     protocol    = "tcp"
     cidr_blocks = [module.vpc.vpc_cidr_block]
   }
