@@ -10,6 +10,7 @@ TABLE_NAME=$NAME-terraform-state-lock
 echo -e "\033[32mCreating S3 Bucket $BUCKET_NAME\033[0m"
 aws s3api create-bucket \
   --bucket "$BUCKET_NAME" \
+  --region "$REGION" \
   --create-bucket-configuration "LocationConstraint=$REGION" \
   --profile "$PROFILE"
 aws s3api put-bucket-versioning \
@@ -36,7 +37,6 @@ prefix                  = "${NAME}"
 personal_ip_list        = ["0.0.0.0/0"]
 use_le_staging          = true
 external_domain         = "my-real-domain.io"
-aws_csi                 = true
 tfstate_bucket_name     = "${BUCKET_NAME}"
 tfstate_table_name      = "${TABLE_NAME}"
 tfstate_region          = "${REGION}"
