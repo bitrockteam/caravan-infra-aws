@@ -78,17 +78,17 @@ variable "volume_size" {
 }
 variable "control_plane_machine_type" {
   type        = string
-  default     = "t2.micro"
+  default     = "t3.micro"
   description = "Control plane instance machine type"
 }
 variable "worker_plane_machine_type" {
   type        = string
-  default     = "t3.small"
+  default     = "t3.large"
   description = "Working plane instance machine type"
 }
 variable "monitoring_machine_type" {
   type        = string
-  default     = "t2.large"
+  default     = "t3.xlarge"
   description = "Monitoring instance machine type"
 }
 # AWS Network

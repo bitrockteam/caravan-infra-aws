@@ -40,7 +40,7 @@ resource "local_file" "ssh_key" {
 }
 
 resource "aws_key_pair" "hashicorp_keypair" {
-  key_name   = "hashicorp_shared_sshkey"
+  key_name   = "${var.prefix}_caravan_shared_sshkey"
   public_key = tls_private_key.ssh_key.public_key_openssh
 }
 
