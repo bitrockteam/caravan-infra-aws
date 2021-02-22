@@ -68,17 +68,17 @@ terraform apply --var-file aws.tfvars
 | [aws_ebs_volume](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/ebs_volume) |
 | [aws_iam_instance_profile](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/iam_instance_profile) |
 | [aws_iam_policy_document](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/data-sources/iam_policy_document) |
-| [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/iam_role) |
 | [aws_iam_role_policy](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/iam_role_policy) |
+| [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/iam_role) |
 | [aws_instance](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/instance) |
 | [aws_key_pair](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/key_pair) |
 | [aws_kms_key](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/kms_key) |
 | [aws_launch_template](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/launch_template) |
-| [aws_lb](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/lb) |
-| [aws_lb_listener](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/lb_listener) |
 | [aws_lb_listener_rule](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/lb_listener_rule) |
-| [aws_lb_target_group](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/lb_target_group) |
+| [aws_lb_listener](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/lb_listener) |
 | [aws_lb_target_group_attachment](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/lb_target_group_attachment) |
+| [aws_lb_target_group](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/lb_target_group) |
+| [aws_lb](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/lb) |
 | [aws_route53_record](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/route53_record) |
 | [aws_route53_zone](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/data-sources/route53_zone) |
 | [aws_route53_zone](https://registry.terraform.io/providers/hashicorp/aws/3.0/docs/resources/route53_zone) |
@@ -98,7 +98,7 @@ terraform apply --var-file aws.tfvars
 | region | AWS region to use | `string` | n/a | yes |
 | shared\_credentials\_file | AWS credential file path | `string` | n/a | yes |
 | ami\_filter\_name | Regexp to find AMI to use built with caravan-baking | `string` | `"*caravan-centos-image-*"` | no |
-| ca\_certs | Fake certificates from staging Let's Encrypt | <pre>map(object({<br>    filename = string<br>    pemurl   = string<br>  }))</pre> | <pre>{<br>  "fakeleintermediatex1": {<br>    "filename": "fakeleintermediatex1.pem",<br>    "pemurl": "https://letsencrypt.org/certs/fakeleintermediatex1.pem"<br>  },<br>  "fakelerootx1": {<br>    "filename": "fakelerootx1.pem",<br>    "pemurl": "https://letsencrypt.org/certs/fakelerootx1.pem"<br>  }<br>}</pre> | no |
+| ca\_certs | Fake certificates from staging Let's Encrypt | <pre>map(object({<br>    filename = string<br>    pemurl   = string<br>  }))</pre> | <pre>{<br>  "stg-int-r3": {<br>    "filename": "letsencrypt-stg-int-r3.pem",<br>    "pemurl": "https://letsencrypt.org/certs/staging/letsencrypt-stg-int-r3.pem"<br>  },<br>  "stg-root-x1": {<br>    "filename": "letsencrypt-stg-root-x1.pem",<br>    "pemurl": "https://letsencrypt.org/certs/staging/letsencrypt-stg-root-x1.pem"<br>  }<br>}</pre> | no |
 | control\_plane\_instance\_count | Control plane instances number | `number` | `3` | no |
 | control\_plane\_machine\_type | Control plane instance machine type | `string` | `"t3.micro"` | no |
 | csi\_volumes | Example:<br>{<br>  "jenkins" : {<br>    "availability\_zone" : "eu-west-1a"<br>    "size" : "30"<br>    "type" : "gp3"<br>    "tags" : { "application": "jenkins\_master" }<br>  }<br>} | `map(map(string))` | `{}` | no |
