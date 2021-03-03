@@ -1,6 +1,6 @@
 # Caravan Infra AWS
 
-![Caravan 2021 AWS - vpc-8c680ae7 (1)](https://user-images.githubusercontent.com/5972762/109788762-e7c91200-7c0f-11eb-9175-17bf7d183b2a.png)
+![Caravan 2021 AWS](https://lucid.app/publicSegments/view/eb9ef142-5bd0-4309-a8c9-98a376bd45ea/image.png)
 
 ## Prerequisites
 
