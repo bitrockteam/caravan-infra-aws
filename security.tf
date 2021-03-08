@@ -232,6 +232,13 @@ resource "aws_security_group" "internal_workers" {
     cidr_blocks = [module.vpc.vpc_cidr_block]
   }
   ingress {
+    description = "Node Exporter"
+    from_port   = 9100
+    to_port     = 9100
+    protocol    = "tcp"
+    cidr_blocks = [module.vpc.vpc_cidr_block]
+  }
+  ingress {
     from_port   = 20000
     to_port     = 32000
     protocol    = "tcp"
