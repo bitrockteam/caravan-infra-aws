@@ -1,5 +1,7 @@
 # Caravan Infra AWS
 
+![Caravan 2021 AWS](https://lucid.app/publicSegments/view/eb9ef142-5bd0-4309-a8c9-98a376bd45ea/image.png)
+
 ## Prerequisites
 
 - AWS Credentials file at `~/.aws/credentials` like
