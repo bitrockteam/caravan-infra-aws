@@ -37,7 +37,7 @@ variable "tfstate_region" {
 # AWS Compute
 variable "ami_filter_name" {
   type        = string
-  default     = "*caravan-centos-image-*"
+  default     = "*caravan-centos-image-os-*"
   description = "Regexp to find AMI to use built with caravan-baking"
 }
 variable "control_plane_instance_count" {

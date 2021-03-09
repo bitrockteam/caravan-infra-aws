@@ -99,7 +99,7 @@ terraform apply --var-file aws.tfvars
 | prefix | The prefix of the objects' names | `string` | n/a | yes |
 | region | AWS region to use | `string` | n/a | yes |
 | shared\_credentials\_file | AWS credential file path | `string` | n/a | yes |
-| ami\_filter\_name | Regexp to find AMI to use built with caravan-baking | `string` | `"*caravan-centos-image-*"` | no |
+| ami\_filter\_name | Regexp to find AMI to use built with caravan-baking | `string` | `"*caravan-centos-image-os-*"` | no |
 | ca\_certs | Fake certificates from staging Let's Encrypt | <pre>map(object({<br>    filename = string<br>    pemurl   = string<br>  }))</pre> | <pre>{<br>  "stg-int-r3": {<br>    "filename": "letsencrypt-stg-int-r3.pem",<br>    "pemurl": "https://letsencrypt.org/certs/staging/letsencrypt-stg-int-r3.pem"<br>  },<br>  "stg-root-x1": {<br>    "filename": "letsencrypt-stg-root-x1.pem",<br>    "pemurl": "https://letsencrypt.org/certs/staging/letsencrypt-stg-root-x1.pem"<br>  }<br>}</pre> | no |
 | control\_plane\_instance\_count | Control plane instances number | `number` | `3` | no |
 | control\_plane\_machine\_type | Control plane instance machine type | `string` | `"t3.micro"` | no |
