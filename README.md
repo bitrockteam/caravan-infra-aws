@@ -37,7 +37,7 @@ terraform apply --var-file aws.tfvars
 
 | Name | Version |
 |------|---------|
-| terraform | ~> 0.13.1 |
+| terraform | ~> 0.14.7 |
 | aws | ~> 3.0 |
 
 ## Providers

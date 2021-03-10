@@ -71,12 +71,15 @@ resource "aws_instance" "hashicorp_cluster" {
   ]
 
   associate_public_ip_address = true
-  ebs_optimized               = false
   iam_instance_profile        = aws_iam_instance_profile.control_plane.id
 
   tags = {
     Name    = format("clustnode%.2d", count.index + 1)
     Project = var.prefix
+  }
+
+  lifecycle {
+    ignore_changes = [ebs_optimized]
   }
 }
 
@@ -178,11 +181,14 @@ resource "aws_instance" "monitoring" {
   ]
 
   associate_public_ip_address = true
-  ebs_optimized               = false
   iam_instance_profile        = aws_iam_instance_profile.worker_plane.id
 
   tags = {
     Name    = "monitoring"
     Project = var.prefix
+  }
+
+  lifecycle {
+    ignore_changes = [ebs_optimized]
   }
 }
