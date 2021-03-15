@@ -54,10 +54,10 @@ terraform apply --var-file aws.tfvars
 
 | Name | Source | Version |
 |------|--------|---------|
-| caravan-bootstrap | git::ssh://git@github.com/bitrockteam/caravan-bootstrap?ref=main |  |
-| cloud_init_control_plane | git::ssh://git@github.com/bitrockteam/caravan-cloudinit?ref=main |  |
-| cloud_init_worker_plane | git::ssh://git@github.com/bitrockteam/caravan-cloudinit?ref=main |  |
-| terraform_acme_le | git::ssh://git@github.com/bitrockteam/caravan-acme-le?ref=main |  |
+| caravan-bootstrap | git::ssh://git@github.com/bitrockteam/caravan-bootstrap?ref=refs/tags/v0.2.1 |  |
+| cloud_init_control_plane | git::ssh://git@github.com/bitrockteam/caravan-cloudinit?ref=refs/tags/v0.1.4 |  |
+| cloud_init_worker_plane | git::ssh://git@github.com/bitrockteam/caravan-cloudinit?ref=refs/tags/v0.1.4 |  |
+| terraform_acme_le | git::ssh://git@github.com/bitrockteam/caravan-acme-le?ref=refs/tags/v0.0.1 |  |
 | vpc | terraform-aws-modules/vpc/aws |  |
 
 ## Resources
