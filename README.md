@@ -101,6 +101,7 @@ terraform apply --var-file aws.tfvars
 | shared\_credentials\_file | AWS credential file path | `string` | n/a | yes |
 | ami\_filter\_name | Regexp to find AMI to use built with caravan-baking | `string` | `"*caravan-centos-image-os-*"` | no |
 | ca\_certs | Fake certificates from staging Let's Encrypt | <pre>map(object({<br>    filename = string<br>    pemurl   = string<br>  }))</pre> | <pre>{<br>  "stg-int-r3": {<br>    "filename": "letsencrypt-stg-int-r3.pem",<br>    "pemurl": "https://letsencrypt.org/certs/staging/letsencrypt-stg-int-r3.pem"<br>  },<br>  "stg-root-x1": {<br>    "filename": "letsencrypt-stg-root-x1.pem",<br>    "pemurl": "https://letsencrypt.org/certs/staging/letsencrypt-stg-root-x1.pem"<br>  }<br>}</pre> | no |
+| consul\_license\_file | Path to Consul Enterprise license | `string` | `null` | no |
 | control\_plane\_instance\_count | Control plane instances number | `number` | `3` | no |
 | control\_plane\_machine\_type | Control plane instance machine type | `string` | `"t3.micro"` | no |
 | csi\_volumes | Example:<br>{<br>  "jenkins" : {<br>    "availability\_zone" : "eu-west-1a"<br>    "size" : "30"<br>    "type" : "gp3"<br>    "tags" : { "application": "jenkins\_master" }<br>  }<br>} | `map(map(string))` | `{}` | no |
@@ -108,10 +109,12 @@ terraform apply --var-file aws.tfvars
 | enable\_monitoring | Enable monitoring | `bool` | `true` | no |
 | external\_domain | Domain used for endpoints and certs | `string` | `""` | no |
 | monitoring\_machine\_type | Monitoring instance machine type | `string` | `"t3.xlarge"` | no |
+| nomad\_license\_file | Path to Nomad Enterprise license | `string` | `null` | no |
 | tfstate\_bucket\_name | S3 Bucket where Terraform state is stored | `string` | `""` | no |
 | tfstate\_region | AWS Region where Terraform state resources are | `string` | `""` | no |
 | tfstate\_table\_name | DynamoDB Table where Terraform state lock is acquired | `string` | `""` | no |
 | use\_le\_staging | Use staging Let's Encrypt endpoint | `bool` | `true` | no |
+| vault\_license\_file | Path to Vault Enterprise license | `string` | `null` | no |
 | volume\_size | Volume size of workers disk | `number` | `100` | no |
 | vpc\_cidr | VPC cidr | `string` | `"10.0.0.0/16"` | no |
 | vpc\_private\_subnets | VCP private subnets | `list(string)` | <pre>[<br>  "10.0.1.0/24",<br>  "10.0.2.0/24",<br>  "10.0.3.0/24"<br>]</pre> | no |
