@@ -143,3 +143,19 @@ variable "ca_certs" {
   }
   description = "Fake certificates from staging Let's Encrypt"
 }
+
+variable "vault_license_file" {
+  type        = string
+  default     = null
+  description = "Path to Vault Enterprise license"
+}
+variable "consul_license_file" {
+  type        = string
+  default     = null
+  description = "Path to Consul Enterprise license"
+}
+variable "nomad_license_file" {
+  type        = string
+  default     = null
+  description = "Path to Nomad Enterprise license"
+}
