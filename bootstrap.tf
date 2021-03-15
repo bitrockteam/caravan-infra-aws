@@ -9,6 +9,7 @@ module "caravan-bootstrap" {
   tcp_listener_tls               = false
   dc_name                        = var.dc_name
   prefix                         = var.prefix
+  external_domain                = var.external_domain
   vault_endpoint                 = "http://127.0.0.1:8200"
   control_plane_role_name        = local.control_plane_role_name
 
