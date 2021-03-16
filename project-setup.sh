@@ -69,7 +69,7 @@ DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 echo "Deploying infrastructure..."
 
-terraform init -reconfigure -upgrade
+terraform init -reconfigure
 terraform apply -var-file ${CLOUD_NAME}.tfvars -auto-approve
 
 echo "Waiting for Vault \${VAULT_ADDR} to be up..."
@@ -98,7 +98,7 @@ echo "Configuring platform..."
 cd "\$DIR/../caravan-platform"
 cp "${PREFIX}-${CLOUD_NAME}-backend.tf.bak" "backend.tf"
 
-terraform init -reconfigure -upgrade
+terraform init -reconfigure
 terraform apply -var-file "${PREFIX}-${CLOUD_NAME}.tfvars" -auto-approve
 
 echo "Waiting for Consul Connect to be ready..."
@@ -112,7 +112,7 @@ echo "Configuring application support..."
 cd "\$DIR/../caravan-application-support"
 cp "${PREFIX}-${CLOUD_NAME}-backend.tf.bak" "backend.tf"
 
-terraform init -reconfigure -upgrade
+terraform init -reconfigure
 terraform apply -var-file "${PREFIX}-${CLOUD_NAME}.tfvars" -auto-approve
 
 cd "\$DIR"
@@ -139,7 +139,7 @@ echo "Destroying application support..."
 cd "\$DIR/../caravan-application-support"
 cp "${PREFIX}-${CLOUD_NAME}-backend.tf.bak" "backend.tf"
 
-terraform init -reconfigure -upgrade
+terraform init -reconfigure
 terraform destroy -var-file "${PREFIX}-${CLOUD_NAME}.tfvars" -auto-approve
 
 echo "Destroying platform..."
@@ -147,14 +147,14 @@ echo "Destroying platform..."
 cd "\$DIR/../caravan-platform"
 cp "${PREFIX}-${CLOUD_NAME}-backend.tf.bak" "backend.tf"
 
-terraform init -reconfigure -upgrade
+terraform init -reconfigure
 terraform destroy -var-file "${PREFIX}-${CLOUD_NAME}.tfvars" -auto-approve
 
 echo "Destroying infrastructure..."
 
 cd "\$DIR"
 
-terraform init -reconfigure -upgrade
+terraform init -reconfigure
 terraform destroy -var-file ${CLOUD_NAME}.tfvars -auto-approve
 
 echo "Done."
