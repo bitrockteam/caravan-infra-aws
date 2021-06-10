@@ -24,11 +24,12 @@ module "vpc" {
 }
 
 resource "aws_lb" "hashicorp_alb" {
-  name               = "hashicorp-alb"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.alb.id]
-  subnets            = module.vpc.public_subnets
+  name                       = "hashicorp-alb"
+  internal                   = false #tfsec:ignore:AWS005
+  load_balancer_type         = "application"
+  security_groups            = [aws_security_group.alb.id]
+  subnets                    = module.vpc.public_subnets
+  drop_invalid_header_fields = true
 
   enable_deletion_protection = false
 

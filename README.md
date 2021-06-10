@@ -44,21 +44,21 @@ terraform apply --var-file aws.tfvars
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 3.0 |
-| <a name="provider_local"></a> [local](#provider\_local) | n/a |
-| <a name="provider_null"></a> [null](#provider\_null) | n/a |
-| <a name="provider_random"></a> [random](#provider\_random) | n/a |
-| <a name="provider_tls"></a> [tls](#provider\_tls) | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.42.0 |
+| <a name="provider_local"></a> [local](#provider\_local) | 2.1.0 |
+| <a name="provider_null"></a> [null](#provider\_null) | 3.1.0 |
+| <a name="provider_random"></a> [random](#provider\_random) | 3.1.0 |
+| <a name="provider_tls"></a> [tls](#provider\_tls) | 3.1.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_caravan-bootstrap"></a> [caravan-bootstrap](#module\_caravan-bootstrap) | git::ssh://git@github.com/bitrockteam/caravan-bootstrap?ref=refs/tags/v0.2.1 |  |
-| <a name="module_cloud_init_control_plane"></a> [cloud\_init\_control\_plane](#module\_cloud\_init\_control\_plane) | git::ssh://git@github.com/bitrockteam/caravan-cloudinit?ref=refs/tags/v0.1.4 |  |
-| <a name="module_cloud_init_worker_plane"></a> [cloud\_init\_worker\_plane](#module\_cloud\_init\_worker\_plane) | git::ssh://git@github.com/bitrockteam/caravan-cloudinit?ref=refs/tags/v0.1.4 |  |
-| <a name="module_terraform_acme_le"></a> [terraform\_acme\_le](#module\_terraform\_acme\_le) | git::ssh://git@github.com/bitrockteam/caravan-acme-le?ref=refs/tags/v0.0.1 |  |
-| <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws |  |
+| <a name="module_caravan-bootstrap"></a> [caravan-bootstrap](#module\_caravan-bootstrap) | git::https://github.com/bitrockteam/caravan-bootstrap | refs/tags/v0.2.1 |
+| <a name="module_cloud_init_control_plane"></a> [cloud\_init\_control\_plane](#module\_cloud\_init\_control\_plane) | git::https://github.com/bitrockteam/caravan-cloudinit | refs/tags/v0.1.4 |
+| <a name="module_cloud_init_worker_plane"></a> [cloud\_init\_worker\_plane](#module\_cloud\_init\_worker\_plane) | git::https://github.com/bitrockteam/caravan-cloudinit | refs/tags/v0.1.4 |
+| <a name="module_terraform_acme_le"></a> [terraform\_acme\_le](#module\_terraform\_acme\_le) | git::https://github.com/bitrockteam/caravan-acme-le | refs/tags/v0.0.1 |
+| <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | n/a |
 
 ## Resources
 

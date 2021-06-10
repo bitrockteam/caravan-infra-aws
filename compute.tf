@@ -70,8 +70,13 @@ resource "aws_instance" "hashicorp_cluster" {
     aws_security_group.internal_workers.id,
   ]
 
-  associate_public_ip_address = true
+  associate_public_ip_address = true #tfsec:ignore:AWS012
   iam_instance_profile        = aws_iam_instance_profile.control_plane.id
+
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "required"
+  }
 
   tags = {
     Name    = format("clustnode%.2d", count.index + 1)
@@ -180,8 +185,13 @@ resource "aws_instance" "monitoring" {
     aws_security_group.internal_workers.id,
   ]
 
-  associate_public_ip_address = true
+  associate_public_ip_address = true #tfsec:ignore:AWS012
   iam_instance_profile        = aws_iam_instance_profile.worker_plane.id
+
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "required"
+  }
 
   tags = {
     Name    = "monitoring"
