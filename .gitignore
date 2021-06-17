@@ -81,6 +81,7 @@ ssh-key
 *.tfvars
 backend.tf
 .*token*
+.*-encryption*
 taint.sh
 .lb-*
 files/*.jar
