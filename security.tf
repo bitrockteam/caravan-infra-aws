@@ -1,6 +1,6 @@
 
 resource "aws_security_group" "allow_cluster_basics" {
-  name        = join("_", [var.prefix, "hashicorp_cluster_ssh_in"])
+  name        = "${var.prefix}_hashicorp_cluster_ssh_in"
   description = "Allow Hashicorp Cluster Traffic"
   vpc_id      = module.vpc.vpc_id
 
@@ -28,13 +28,13 @@ resource "aws_security_group" "allow_cluster_basics" {
   }
 
   tags = {
-    Name    = join("_", [var.prefix, "hashicorp_cluster_ssh_in"])
+    Name    = "${var.prefix}_hashicorp_cluster_ssh_in"
     Project = var.prefix
   }
 }
 
 resource "aws_security_group" "alb" {
-  name        = join("_", [var.prefix, "hashicorp_internal_alb_in"])
+  name        = "${var.prefix}_hashicorp_internal_alb_in"
   description = "Allow Hashicorp ALB Internal Traffic"
   vpc_id      = module.vpc.vpc_id
 
@@ -80,7 +80,7 @@ resource "aws_security_group" "alb" {
 }
 
 resource "aws_security_group" "internal_vault" {
-  name        = join("_", [var.prefix, "hashicorp_internal_vault_in"])
+  name        = "${var.prefix}_hashicorp_internal_vault_in"
   description = "Allow Hashicorp Vault Internal Traffic"
   vpc_id      = module.vpc.vpc_id
 
@@ -99,14 +99,14 @@ resource "aws_security_group" "internal_vault" {
   }
 
   tags = {
-    Name      = join("_", [var.prefix, "hashicorp_cluster_in"])
+    Name      = "${var.prefix}_hashicorp_cluster_in"
     Project   = var.prefix
     Component = "vault"
   }
 
 }
 resource "aws_security_group" "internal_consul" {
-  name        = join("_", [var.prefix, "hashicorp_internal_consul_in"])
+  name        = "${var.prefix}_hashicorp_internal_consul_in"
   description = "Allow Hashicorp Consul Internal Traffic"
   vpc_id      = module.vpc.vpc_id
 
@@ -151,14 +151,14 @@ resource "aws_security_group" "internal_consul" {
   }
 
   tags = {
-    Name      = join("_", [var.prefix, "hashicorp_cluster_in"])
+    Name      = "${var.prefix}_hashicorp_cluster_in"
     Project   = var.prefix
     Component = "consul"
   }
 
 }
 resource "aws_security_group" "internal_nomad" {
-  name        = join("_", [var.prefix, "hashicorp_internal_nomad_in"])
+  name        = "${var.prefix}_hashicorp_internal_nomad_in"
   description = "Allow Hashicorp Nomad Internal Traffic"
   vpc_id      = module.vpc.vpc_id
 
@@ -182,7 +182,7 @@ resource "aws_security_group" "internal_nomad" {
   }
 
   tags = {
-    Name      = join("_", [var.prefix, "hashicorp_cluster_in"])
+    Name      = "${var.prefix}_hashicorp_cluster_in"
     Project   = var.prefix
     Component = "nomad"
   }
@@ -190,7 +190,7 @@ resource "aws_security_group" "internal_nomad" {
 }
 
 resource "aws_security_group" "internal_workers" {
-  name        = join("_", [var.prefix, "hashicorp_internal_workers"])
+  name        = "${var.prefix}_hashicorp_internal_workers"
   description = "Allow Hashicorp Workers Internal Traffic"
   vpc_id      = module.vpc.vpc_id
 
@@ -246,7 +246,7 @@ resource "aws_security_group" "internal_workers" {
   }
 
   tags = {
-    Name      = join("_", [var.prefix, "hashicorp_internal_workers"])
+    Name      = "${var.prefix}_hashicorp_internal_workers"
     Project   = var.prefix
     Component = "nomad"
   }
