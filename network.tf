@@ -84,7 +84,7 @@ resource "aws_lb_listener" "https_443" {
 
 // aws_lb_target_group
 resource "aws_lb_target_group" "vault" {
-  name     = "${var.prefix}-hashicorp-target-group-vault"
+  name     = "${var.prefix}-target-group-vault"
   port     = 8200
   protocol = "HTTP"
   vpc_id   = module.vpc.vpc_id
@@ -100,7 +100,7 @@ resource "aws_lb_target_group" "vault" {
   }
 }
 resource "aws_lb_target_group" "consul" {
-  name     = "${var.prefix}-hashicorp-target-group-consul"
+  name     = "${var.prefix}-target-group-consul"
   port     = 8500
   protocol = "HTTP"
   vpc_id   = module.vpc.vpc_id
@@ -116,7 +116,7 @@ resource "aws_lb_target_group" "consul" {
   }
 }
 resource "aws_lb_target_group" "nomad" {
-  name     = "${var.prefix}-hashicorp-target-group-nomad"
+  name     = "${var.prefix}-target-group-nomad"
   port     = 4646
   protocol = "HTTP"
   vpc_id   = module.vpc.vpc_id
@@ -132,7 +132,7 @@ resource "aws_lb_target_group" "nomad" {
   }
 }
 resource "aws_lb_target_group" "ingress" {
-  name     = "${var.prefix}-hashicorp-target-group-ingress"
+  name     = "${var.prefix}-target-group-ingress"
   port     = 8080
   protocol = "HTTP"
   vpc_id   = module.vpc.vpc_id
