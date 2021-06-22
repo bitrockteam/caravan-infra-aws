@@ -37,32 +37,32 @@ data "aws_iam_policy_document" "vault_client" {
 
 // aws_iam_role
 resource "aws_iam_role" "control_plane" {
-  name               = "control-plane-${random_pet.env.id}"
+  name               = "${var.prefix}-control-plane-${random_pet.env.id}"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 resource "aws_iam_role" "worker_plane" {
-  name               = "worker-plane-${random_pet.env.id}"
+  name               = "${var.prefix}-worker-plane-${random_pet.env.id}"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
 // aws_iam_instance_profile
 resource "aws_iam_instance_profile" "control_plane" {
-  name = "control-plane-${random_pet.env.id}"
+  name = "${var.prefix}-control-plane-${random_pet.env.id}"
   role = aws_iam_role.control_plane.name
 }
 resource "aws_iam_instance_profile" "worker_plane" {
-  name = "worker-plane-${random_pet.env.id}"
+  name = "${var.prefix}-worker-plane-${random_pet.env.id}"
   role = aws_iam_role.worker_plane.name
 }
 
 // aws_iam_role_policy
 resource "aws_iam_role_policy" "vault_kms_unseal" {
-  name   = "vault-kms-unseal-${random_pet.env.id}"
+  name   = "${var.prefix}-vault-kms-unseal-${random_pet.env.id}"
   role   = aws_iam_role.control_plane.id
   policy = data.aws_iam_policy_document.vault_kms_unseal.json
 }
 resource "aws_iam_role_policy" "vault_aws_auth" {
-  name = "control-plane-policy"
+  name = "${var.prefix}-control-plane-policy"
   role = aws_iam_role.control_plane.name
 
   policy = <<-EOF
@@ -98,13 +98,13 @@ resource "aws_iam_role_policy" "vault_aws_auth" {
 }
 
 resource "aws_iam_role_policy" "vault_client" {
-  name   = "vault-client-${random_pet.env.id}"
+  name   = "${var.prefix}-vault-client-${random_pet.env.id}"
   role   = aws_iam_role.worker_plane.name
   policy = data.aws_iam_policy_document.vault_client.json
 }
 
 resource "aws_iam_role_policy" "csi" {
-  name   = "ebs-csi-client"
+  name   = "${var.prefix}-ebs-csi-client"
   role   = aws_iam_role.worker_plane.id
   policy = <<-EOF
 {
