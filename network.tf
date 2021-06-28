@@ -108,7 +108,7 @@ resource "aws_lb_target_group" "consul" {
   health_check {
     protocol = "HTTP"
     matcher  = "200"
-    path     = "/v1/sys/leader"
+    path     = "/v1/status/leader"
   }
 
   tags = {
@@ -124,7 +124,7 @@ resource "aws_lb_target_group" "nomad" {
   health_check {
     protocol = "HTTP"
     matcher  = "200"
-    path     = "/v1/sys/leader"
+    path     = "/v1/status/leader"
   }
 
   tags = {
