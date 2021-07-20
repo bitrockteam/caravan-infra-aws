@@ -49,7 +49,7 @@ resource "aws_instance" "hashicorp_cluster" {
 
   ami           = data.aws_ami.centos7.id
   instance_type = var.control_plane_machine_type
-  subnet_id     = module.vpc.public_subnets[count.index]
+  subnet_id     = module.vpc.private_subnets[count.index]
   key_name      = aws_key_pair.hashicorp_keypair.key_name
 
   user_data = module.cloud_init_control_plane.control_plane_user_data
@@ -135,7 +135,7 @@ resource "aws_autoscaling_group" "hashicorp_workers" {
   max_size         = var.workers_group_size
   min_size         = 1
 
-  vpc_zone_identifier = module.vpc.public_subnets
+  vpc_zone_identifier = module.vpc.private_subnets
 
   target_group_arns = [aws_lb_target_group.ingress.arn]
 
@@ -164,7 +164,7 @@ resource "aws_instance" "monitoring" {
 
   ami           = data.aws_ami.centos7.id
   instance_type = var.monitoring_machine_type
-  subnet_id     = module.vpc.public_subnets[count.index]
+  subnet_id     = module.vpc.private_subnets[count.index]
   key_name      = aws_key_pair.hashicorp_keypair.key_name
 
   user_data = module.cloud_init_worker_plane.monitoring_user_data

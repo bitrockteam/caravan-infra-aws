@@ -1,7 +1,10 @@
 module "caravan-bootstrap" {
-  source                         = "git::https://github.com/bitrockteam/caravan-bootstrap?ref=refs/tags/v0.2.7"
+  source                         = "git::https://github.com/bitrockteam/caravan-bootstrap?ref=remove-var"
   ssh_private_key                = chomp(tls_private_key.ssh_key.private_key_pem)
   ssh_user                       = "centos"
+  ssh_bastion_host               = aws_lb.hashicorp_nlb.dns_name
+  ssh_bastion_private_key        = chomp(tls_private_key.ssh_key.private_key_pem)
+  ssh_bastion_user               = "centos"
   ssh_timeout                    = "240s"
   control_plane_nodes_ids        = [for n in aws_instance.hashicorp_cluster : n.tags["Name"]]
   control_plane_nodes            = { for n in aws_instance.hashicorp_cluster : n.tags["Name"] => n.private_ip }

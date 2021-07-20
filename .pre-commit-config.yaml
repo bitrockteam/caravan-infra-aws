@@ -7,6 +7,5 @@ repos:
         args: ['--args=--sort-by required']
       - id: terraform_tflint
         args: [ '--args=--config=__GIT_WORKING_DIR__/.tflint.hcl' ]
-      # https://github.com/tfsec/tfsec/issues/493
       # - id: terraform_tfsec
       - id: terraform_validate
