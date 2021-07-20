@@ -29,7 +29,7 @@ resource "aws_lb" "hashicorp_nlb" {
   name               = "${var.prefix}-hashicorp-nlb"
   internal           = false #tfsec:ignore:AWS005
   load_balancer_type = "network"
-  subnets            = module.vpc.private_subnets
+  subnets            = module.vpc.public_subnets
 
   enable_deletion_protection       = false
   enable_cross_zone_load_balancing = true

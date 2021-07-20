@@ -44,8 +44,8 @@ terraform apply --var-file aws.tfvars
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.48.0 |
-| <a name="provider_dns"></a> [dns](#provider\_dns) | 3.2.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.50.0 |
+| <a name="provider_dns"></a> [dns](#provider\_dns) | 3.2.1 |
 | <a name="provider_local"></a> [local](#provider\_local) | 2.1.0 |
 | <a name="provider_null"></a> [null](#provider\_null) | 3.1.0 |
 | <a name="provider_random"></a> [random](#provider\_random) | 3.1.0 |
