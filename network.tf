@@ -77,8 +77,6 @@ resource "aws_lb_target_group" "alb" {
 resource "aws_lb_target_group_attachment" "this" {
   for_each = local.ports_ips_product
 
-  depends_on = [aws_lb.hashicorp_alb]
-
   target_group_arn = aws_lb_target_group.alb[each.value.port_name].arn
   target_id        = each.value.ip
   port             = each.value.port
@@ -159,6 +157,17 @@ resource "aws_lb_listener" "https_443" {
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.ingress.arn
+  }
+}
+
+resource "aws_lb_listener" "http_8500" {
+  load_balancer_arn = aws_lb.hashicorp_alb.arn
+  port              = "8500"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.consul.arn
   }
 }
 

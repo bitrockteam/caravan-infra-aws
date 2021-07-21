@@ -1,6 +1,7 @@
 
 vault_endpoint  = "https://vault.${prefix}.${external_domain}"
 consul_endpoint = "https://consul.${prefix}.${external_domain}"
+consul_internal_address = "${alb_dns}:8500"
 nomad_endpoint  = "https://nomad.${prefix}.${external_domain}"
 
 %{ if use_le_staging ~}

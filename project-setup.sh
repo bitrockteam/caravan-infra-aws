@@ -70,6 +70,7 @@ DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 echo "Deploying infrastructure..."
 
 terraform init -reconfigure
+terraform apply -var-file ${CLOUD_NAME}.tfvars -target=aws_lb.hashicorp_alb -auto-approve
 terraform apply -var-file ${CLOUD_NAME}.tfvars -auto-approve
 
 echo "Waiting for Vault \${VAULT_ADDR} to be up..."
