@@ -196,3 +196,4 @@ After `terraform destroy -var-file=aws.tfvars`, for removing bucket and dynamodb
 ```bash
 ./project-cleanup.sh <NAME> <REGION> <PROFILE>
 ```
+
