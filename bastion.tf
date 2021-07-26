@@ -51,7 +51,7 @@ resource "aws_autoscaling_group" "bastion-service" {
   tags = [
     {
       key                 = "Name"
-      value               = "${var.prefix}-caravan-bastion"
+      value               = "${var.prefix}-bastion"
       propagate_at_launch = true
     }
   ]

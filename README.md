@@ -44,7 +44,7 @@ terraform apply --var-file aws.tfvars
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.50.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.51.0 |
 | <a name="provider_dns"></a> [dns](#provider\_dns) | 3.2.1 |
 | <a name="provider_local"></a> [local](#provider\_local) | 2.1.0 |
 | <a name="provider_null"></a> [null](#provider\_null) | 3.1.0 |
@@ -55,7 +55,7 @@ terraform apply --var-file aws.tfvars
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_caravan-bootstrap"></a> [caravan-bootstrap](#module\_caravan-bootstrap) | git::https://github.com/bitrockteam/caravan-bootstrap | remove-var |
+| <a name="module_caravan-bootstrap"></a> [caravan-bootstrap](#module\_caravan-bootstrap) | git::https://github.com/bitrockteam/caravan-bootstrap | refs/tags/v0.2.12 |
 | <a name="module_cloud_init_control_plane"></a> [cloud\_init\_control\_plane](#module\_cloud\_init\_control\_plane) | git::https://github.com/bitrockteam/caravan-cloudinit | refs/tags/v0.1.9 |
 | <a name="module_cloud_init_worker_plane"></a> [cloud\_init\_worker\_plane](#module\_cloud\_init\_worker\_plane) | git::https://github.com/bitrockteam/caravan-cloudinit | refs/tags/v0.1.9 |
 | <a name="module_terraform_acme_le"></a> [terraform\_acme\_le](#module\_terraform\_acme\_le) | git::https://github.com/bitrockteam/caravan-acme-le | refs/tags/v0.0.1 |
