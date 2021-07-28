@@ -106,6 +106,15 @@ variable "vpc_public_subnets" {
   default     = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
   description = "VCP public subnets"
 }
+
+variable "ports" {
+  type = map(number)
+  default = {
+    http  = 80
+    https = 443
+  }
+}
+
 # Hashicorp params
 variable "dc_name" {
   type    = string

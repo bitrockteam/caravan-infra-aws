@@ -1,3 +1,4 @@
+#tfsec:ignore:AWS082
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
@@ -13,6 +14,7 @@ module "vpc" {
   enable_nat_gateway     = true
   single_nat_gateway     = true
   one_nat_gateway_per_az = false
+  create_igw             = true
   enable_ipv6            = false
   tags = {
     Project = var.prefix
@@ -23,12 +25,88 @@ module "vpc" {
   }
 }
 
+resource "aws_lb" "hashicorp_nlb" {
+  name               = "${var.prefix}-hashicorp-nlb"
+  internal           = false #tfsec:ignore:AWS005
+  load_balancer_type = "network"
+  subnets            = module.vpc.public_subnets
+
+  enable_deletion_protection       = false
+  enable_cross_zone_load_balancing = true
+
+  tags = {
+    Project = var.prefix
+  }
+}
+
+
+resource "aws_lb_listener" "this" {
+  for_each = var.ports
+
+  load_balancer_arn = aws_lb.hashicorp_nlb.arn
+
+  protocol = "TCP"
+  port     = each.value
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.alb[each.key].arn
+  }
+}
+
+resource "aws_lb_target_group" "alb" {
+  for_each = var.ports
+
+  name = "${aws_lb.hashicorp_alb.name}-${each.value}"
+
+  port        = each.value
+  protocol    = "TCP"
+  vpc_id      = module.vpc.vpc_id
+  target_type = "ip"
+
+  depends_on = [
+    aws_lb.hashicorp_nlb
+  ]
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+
+resource "aws_lb_target_group_attachment" "this" {
+  for_each = local.ports_ips_product
+
+  target_group_arn = aws_lb_target_group.alb[each.value.port_name].arn
+  target_id        = each.value.ip
+  port             = each.value.port
+}
+
+locals {
+  ports_ips_product = { for x in flatten(
+    [
+      for ip in data.dns_a_record_set.alb.addrs : [
+        for k, v in var.ports : {
+          port_name = k
+          port      = v
+          ip        = ip
+        }
+      ]
+    ]
+  ) : format("%s-%s", x.ip, x.port) => x }
+}
+
+data "dns_a_record_set" "alb" {
+  host = aws_lb.hashicorp_alb.dns_name
+}
+
+
 resource "aws_lb" "hashicorp_alb" {
   name                       = "${var.prefix}-hashicorp-alb"
-  internal                   = false #tfsec:ignore:AWS005
+  internal                   = true
   load_balancer_type         = "application"
   security_groups            = [aws_security_group.alb.id]
-  subnets                    = module.vpc.public_subnets
+  subnets                    = module.vpc.private_subnets
   drop_invalid_header_fields = true
 
   enable_deletion_protection = false
@@ -79,6 +157,17 @@ resource "aws_lb_listener" "https_443" {
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.ingress.arn
+  }
+}
+
+resource "aws_lb_listener" "http_8500" {
+  load_balancer_arn = aws_lb.hashicorp_alb.arn
+  port              = "8500"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.consul.arn
   }
 }
 

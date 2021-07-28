@@ -42,14 +42,21 @@ resource "aws_security_group" "alb" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:AWS008
+    cidr_blocks = [module.vpc.vpc_cidr_block]
   }
 
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:AWS008
+    cidr_blocks = [module.vpc.vpc_cidr_block]
+  }
+
+  ingress {
+    from_port   = 8500
+    to_port     = 8500
+    protocol    = "tcp"
+    cidr_blocks = [module.vpc.vpc_cidr_block]
   }
 
   egress {
@@ -77,6 +84,10 @@ resource "aws_security_group" "alb" {
     cidr_blocks = [module.vpc.vpc_cidr_block]
   }
 
+  tags = {
+    Name    = "${var.prefix}_hashicorp_internal_alb_in"
+    Project = var.prefix
+  }
 }
 
 resource "aws_security_group" "internal_vault" {
@@ -99,7 +110,7 @@ resource "aws_security_group" "internal_vault" {
   }
 
   tags = {
-    Name      = "${var.prefix}_hashicorp_cluster_in"
+    Name      = "${var.prefix}_hashicorp_internal_vault_in"
     Project   = var.prefix
     Component = "vault"
   }
@@ -151,7 +162,7 @@ resource "aws_security_group" "internal_consul" {
   }
 
   tags = {
-    Name      = "${var.prefix}_hashicorp_cluster_in"
+    Name      = "${var.prefix}_hashicorp_internal_consul_in"
     Project   = var.prefix
     Component = "consul"
   }
@@ -182,7 +193,7 @@ resource "aws_security_group" "internal_nomad" {
   }
 
   tags = {
-    Name      = "${var.prefix}_hashicorp_cluster_in"
+    Name      = "${var.prefix}_hashicorp_internal_nomad_in"
     Project   = var.prefix
     Component = "nomad"
   }

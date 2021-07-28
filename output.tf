@@ -27,7 +27,7 @@ output "cluster_public_ips" {
   description = "Control plane public IP addresses"
 }
 output "load_balancer_ip_address" {
-  value       = aws_lb.hashicorp_alb.dns_name
+  value       = aws_lb.hashicorp_nlb.dns_name
   description = "Load Balancer IP address"
 }
 output "hashicorp_endpoints" {
