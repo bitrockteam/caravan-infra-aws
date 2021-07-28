@@ -66,6 +66,25 @@ Example:
 EOF
 }
 
+
+variable "volume_root_size" {
+  type        = number
+  default     = 20
+  description = "Volume size of control plan root disk"
+}
+
+variable "volume_data_size" {
+  type        = number
+  default     = 20
+  description = "Volume size of control plan data disk"
+}
+
+variable "volume_type" {
+  type        = string
+  default     = "gp3"
+  description = "Volume type of disks"
+}
+
 variable "enable_monitoring" {
   type        = bool
   default     = true
