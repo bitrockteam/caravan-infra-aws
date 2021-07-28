@@ -1,6 +1,6 @@
 # Caravan Infra AWS
 
-![Caravan 2021 AWS](https://lucid.app/publicSegments/view/eb9ef142-5bd0-4309-a8c9-98a376bd45ea/image.png)
+![Caravan 2021 AWS](https://lucid.app/publicSegments/view/82496ccf-b453-48c6-81df-230784870538/image.png)
 
 ## Prerequisites
 
