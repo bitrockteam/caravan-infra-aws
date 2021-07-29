@@ -6,7 +6,7 @@ module "caravan-bootstrap" {
   ssh_bastion_private_key        = chomp(tls_private_key.ssh_key.private_key_pem)
   ssh_bastion_user               = "admin"
   ssh_timeout                    = "240s"
-  control_plane_nodes_ids        = [for n in aws_instance.hashicorp_cluster : n.tags["Name"]]
+  control_plane_nodes_ids        = [for n in aws_instance.hashicorp_cluster : n.arn]
   control_plane_nodes            = { for n in aws_instance.hashicorp_cluster : n.tags["Name"] => n.private_ip }
   control_plane_nodes_public_ips = null
   tcp_listener_tls               = false
@@ -26,4 +26,10 @@ module "caravan-bootstrap" {
   consul_license = var.consul_license_file != null ? file(var.consul_license_file) : ""
   vault_license  = var.vault_license_file != null ? file(var.vault_license_file) : ""
   nomad_license  = var.nomad_license_file != null ? file(var.nomad_license_file) : ""
+
+  depends_on = [
+    aws_volume_attachment.vault_cluster_ec2,
+    aws_volume_attachment.consul_cluster_ec2,
+    aws_volume_attachment.nomad_cluster_ec2
+  ]
 }

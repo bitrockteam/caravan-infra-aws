@@ -47,17 +47,20 @@ resource "aws_key_pair" "hashicorp_keypair" {
 resource "aws_instance" "hashicorp_cluster" {
   count = var.control_plane_instance_count
 
-  ami           = data.aws_ami.centos7.id
-  instance_type = var.control_plane_machine_type
-  subnet_id     = module.vpc.private_subnets[count.index]
-  key_name      = aws_key_pair.hashicorp_keypair.key_name
+  ami               = data.aws_ami.centos7.id
+  instance_type     = var.control_plane_machine_type
+  subnet_id         = module.vpc.private_subnets[count.index]
+  availability_zone = module.vpc.azs[count.index]
+  key_name          = aws_key_pair.hashicorp_keypair.key_name
 
-  user_data = module.cloud_init_control_plane.control_plane_user_data
+  user_data_base64 = module.cloud_init_control_plane.control_plane_user_data
 
   root_block_device {
     delete_on_termination = true
+    volume_size           = var.volume_root_size
+    volume_type           = var.volume_type
     tags = {
-      Name    = format("clustnode%.2d", count.index + 1)
+      Name    = format("clustnode-%.2d", count.index + 1)
       Project = var.prefix
     }
   }
@@ -70,7 +73,7 @@ resource "aws_instance" "hashicorp_cluster" {
     aws_security_group.internal_workers.id,
   ]
 
-  associate_public_ip_address = true #tfsec:ignore:AWS012
+  associate_public_ip_address = false
   iam_instance_profile        = aws_iam_instance_profile.control_plane.id
 
   metadata_options {
@@ -79,12 +82,72 @@ resource "aws_instance" "hashicorp_cluster" {
   }
 
   tags = {
-    Name    = format("clustnode%.2d", count.index + 1)
+    Name    = format("clustnode-%.2d", count.index + 1)
     Project = var.prefix
   }
 
   lifecycle {
     ignore_changes = [ebs_optimized]
+  }
+}
+
+resource "aws_volume_attachment" "vault_cluster_ec2" {
+  count = var.control_plane_instance_count
+
+  device_name = "/dev/sdd"
+  volume_id   = aws_ebs_volume.vault_cluster_data[count.index].id
+  instance_id = aws_instance.hashicorp_cluster[count.index].id
+}
+
+resource "aws_ebs_volume" "vault_cluster_data" {
+  count = var.control_plane_instance_count
+
+  availability_zone = aws_instance.hashicorp_cluster[count.index].availability_zone
+  size              = var.volume_data_size
+  type              = var.volume_type
+
+  tags = {
+    Name = format("vault-data-%.2d", count.index + 1)
+  }
+}
+
+resource "aws_volume_attachment" "consul_cluster_ec2" {
+  count = var.control_plane_instance_count
+
+  device_name = "/dev/sde"
+  volume_id   = aws_ebs_volume.consul_cluster_data[count.index].id
+  instance_id = aws_instance.hashicorp_cluster[count.index].id
+}
+
+resource "aws_ebs_volume" "consul_cluster_data" {
+  count = var.control_plane_instance_count
+
+  availability_zone = aws_instance.hashicorp_cluster[count.index].availability_zone
+  size              = var.volume_data_size
+  type              = var.volume_type
+
+  tags = {
+    Name = format("consul-data-%.2d", count.index + 1)
+  }
+}
+
+resource "aws_volume_attachment" "nomad_cluster_ec2" {
+  count = var.control_plane_instance_count
+
+  device_name = "/dev/sdf"
+  volume_id   = aws_ebs_volume.nomad_cluster_data[count.index].id
+  instance_id = aws_instance.hashicorp_cluster[count.index].id
+}
+
+resource "aws_ebs_volume" "nomad_cluster_data" {
+  count = var.control_plane_instance_count
+
+  availability_zone = aws_instance.hashicorp_cluster[count.index].availability_zone
+  size              = var.volume_data_size
+  type              = var.volume_type
+
+  tags = {
+    Name = format("nomad-data-%.2d", count.index + 1)
   }
 }
 
@@ -102,6 +165,7 @@ resource "aws_launch_template" "hashicorp_workers" {
     ebs {
       delete_on_termination = true
       volume_size           = var.volume_size
+      volume_type           = var.volume_type
     }
   }
 
@@ -171,6 +235,8 @@ resource "aws_instance" "monitoring" {
 
   root_block_device {
     delete_on_termination = true
+    volume_size           = var.volume_size
+    volume_type           = var.volume_type
     tags = {
       Name    = "monitoring"
       Project = var.prefix
@@ -185,7 +251,7 @@ resource "aws_instance" "monitoring" {
     aws_security_group.internal_workers.id,
   ]
 
-  associate_public_ip_address = true #tfsec:ignore:AWS012
+  associate_public_ip_address = false
   iam_instance_profile        = aws_iam_instance_profile.worker_plane.id
 
   metadata_options {
