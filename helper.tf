@@ -8,6 +8,7 @@ locals {
     profile                 = var.awsprofile
     use_le_staging          = var.use_le_staging
     alb_dns                 = aws_lb.hashicorp_alb.dns_name
+    enable_nomad            = var.enable_nomad
   })
   backend_tf_platform = templatefile("${path.module}/templates/backend.hcl", {
     key         = "platform"

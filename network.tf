@@ -205,6 +205,7 @@ resource "aws_lb_target_group" "consul" {
   }
 }
 resource "aws_lb_target_group" "nomad" {
+  count    = var.enable_nomad ? 1 : 0
   name     = "${var.prefix}-target-group-nomad"
   port     = 4646
   protocol = "HTTP"
@@ -252,8 +253,8 @@ resource "aws_lb_target_group_attachment" "consul" {
   port             = 8500
 }
 resource "aws_lb_target_group_attachment" "nomad" {
-  count            = var.control_plane_instance_count
-  target_group_arn = aws_lb_target_group.nomad.arn
+  count            = var.enable_nomad ? var.control_plane_instance_count : 0
+  target_group_arn = aws_lb_target_group.nomad[0].arn
   target_id        = aws_instance.hashicorp_cluster[count.index].id
   port             = 4646
 }
@@ -292,12 +293,13 @@ resource "aws_lb_listener_rule" "consul" {
 }
 
 resource "aws_lb_listener_rule" "nomad" {
+  count        = var.enable_nomad ? 1 : 0
   listener_arn = aws_lb_listener.https_443.arn
   priority     = 101
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.nomad.arn
+    target_group_arn = aws_lb_target_group.nomad[0].arn
   }
 
   condition {

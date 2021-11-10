@@ -65,11 +65,16 @@ resource "aws_instance" "hashicorp_cluster" {
     }
   }
 
-  vpc_security_group_ids = [
+  vpc_security_group_ids = var.enable_nomad ? [
     aws_security_group.allow_cluster_basics.id,
     aws_security_group.internal_vault.id,
     aws_security_group.internal_consul.id,
-    aws_security_group.internal_nomad.id,
+    aws_security_group.internal_nomad[0].id,
+    aws_security_group.internal_workers.id,
+    ] : [
+    aws_security_group.allow_cluster_basics.id,
+    aws_security_group.internal_vault.id,
+    aws_security_group.internal_consul.id,
     aws_security_group.internal_workers.id,
   ]
 
@@ -169,11 +174,16 @@ resource "aws_launch_template" "hashicorp_workers" {
     }
   }
 
-  vpc_security_group_ids = [
+  vpc_security_group_ids = var.enable_nomad ? [
     aws_security_group.allow_cluster_basics.id,
     aws_security_group.internal_vault.id,
     aws_security_group.internal_consul.id,
-    aws_security_group.internal_nomad.id,
+    aws_security_group.internal_nomad[0].id,
+    aws_security_group.internal_workers.id,
+    ] : [
+    aws_security_group.allow_cluster_basics.id,
+    aws_security_group.internal_vault.id,
+    aws_security_group.internal_consul.id,
     aws_security_group.internal_workers.id,
   ]
 
@@ -243,11 +253,16 @@ resource "aws_instance" "monitoring" {
     }
   }
 
-  vpc_security_group_ids = [
+  vpc_security_group_ids = var.enable_nomad ? [
     aws_security_group.allow_cluster_basics.id,
     aws_security_group.internal_vault.id,
     aws_security_group.internal_consul.id,
-    aws_security_group.internal_nomad.id,
+    aws_security_group.internal_nomad[0].id,
+    aws_security_group.internal_workers.id,
+    ] : [
+    aws_security_group.allow_cluster_basics.id,
+    aws_security_group.internal_vault.id,
+    aws_security_group.internal_consul.id,
     aws_security_group.internal_workers.id,
   ]
 

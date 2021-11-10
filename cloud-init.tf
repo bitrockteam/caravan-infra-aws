@@ -13,7 +13,7 @@ module "cloud_init_control_plane" {
   partition_prefix         = "p"
   vault_persistent_device  = "/dev/sdd"
   consul_persistent_device = "/dev/sde"
-  nomad_persistent_device  = "/dev/sdf"
+  nomad_persistent_device  = var.enable_nomad ? "/dev/sdf" : ""
 }
 
 module "cloud_init_worker_plane" {
