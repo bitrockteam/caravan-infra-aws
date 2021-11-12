@@ -104,6 +104,7 @@ resource "aws_iam_role_policy" "vault_client" {
 }
 
 resource "aws_iam_role_policy" "csi" {
+  count  = var.enable_nomad ? 1 : 0
   name   = "${var.prefix}-ebs-csi-client"
   role   = aws_iam_role.worker_plane.id
   policy = <<-EOF

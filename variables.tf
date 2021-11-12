@@ -50,6 +50,11 @@ variable "workers_group_size" {
   default     = 3
   description = "Worker plane instances number"
 }
+variable "enable_nomad" {
+  type        = bool
+  default     = true
+  description = "Enables and setup Nomad cluster"
+}
 variable "csi_volumes" {
   type        = map(map(string))
   default     = {}

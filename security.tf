@@ -169,6 +169,7 @@ resource "aws_security_group" "internal_consul" {
 
 }
 resource "aws_security_group" "internal_nomad" {
+  count       = var.enable_nomad ? 1 : 0
   name        = "${var.prefix}_hashicorp_internal_nomad_in"
   description = "Allow Hashicorp Nomad Internal Traffic"
   vpc_id      = module.vpc.vpc_id

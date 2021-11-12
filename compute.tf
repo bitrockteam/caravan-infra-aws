@@ -65,13 +65,11 @@ resource "aws_instance" "hashicorp_cluster" {
     }
   }
 
-  vpc_security_group_ids = [
-    aws_security_group.allow_cluster_basics.id,
+  vpc_security_group_ids = concat([aws_security_group.allow_cluster_basics.id,
     aws_security_group.internal_vault.id,
     aws_security_group.internal_consul.id,
-    aws_security_group.internal_nomad.id,
-    aws_security_group.internal_workers.id,
-  ]
+    aws_security_group.internal_workers.id],
+  var.enable_nomad ? [aws_security_group.internal_nomad[0].id] : [])
 
   associate_public_ip_address = false
   iam_instance_profile        = aws_iam_instance_profile.control_plane.id
@@ -169,13 +167,11 @@ resource "aws_launch_template" "hashicorp_workers" {
     }
   }
 
-  vpc_security_group_ids = [
-    aws_security_group.allow_cluster_basics.id,
+  vpc_security_group_ids = concat([aws_security_group.allow_cluster_basics.id,
     aws_security_group.internal_vault.id,
     aws_security_group.internal_consul.id,
-    aws_security_group.internal_nomad.id,
-    aws_security_group.internal_workers.id,
-  ]
+    aws_security_group.internal_workers.id],
+  var.enable_nomad ? [aws_security_group.internal_nomad[0].id] : [])
 
   user_data = module.cloud_init_worker_plane.worker_plane_user_data
 
@@ -243,13 +239,11 @@ resource "aws_instance" "monitoring" {
     }
   }
 
-  vpc_security_group_ids = [
-    aws_security_group.allow_cluster_basics.id,
+  vpc_security_group_ids = concat([aws_security_group.allow_cluster_basics.id,
     aws_security_group.internal_vault.id,
     aws_security_group.internal_consul.id,
-    aws_security_group.internal_nomad.id,
-    aws_security_group.internal_workers.id,
-  ]
+    aws_security_group.internal_workers.id],
+  var.enable_nomad ? [aws_security_group.internal_nomad[0].id] : [])
 
   associate_public_ip_address = false
   iam_instance_profile        = aws_iam_instance_profile.worker_plane.id
