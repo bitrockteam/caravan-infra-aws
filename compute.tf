@@ -1,4 +1,4 @@
-data "aws_ami" "centos7" {
+data "aws_ami" "caravan" {
   most_recent = true
   owners      = ["self"]
 
@@ -21,11 +21,6 @@ data "aws_ami" "centos7" {
     name   = "architecture"
     values = ["x86_64"]
   }
-
-  filter {
-    name   = "product-code"
-    values = ["cvugziknvmxgqna9noibqnnsy"]
-  }
 }
 
 resource "tls_private_key" "ssh_key" {
@@ -47,7 +42,7 @@ resource "aws_key_pair" "hashicorp_keypair" {
 resource "aws_instance" "hashicorp_cluster" {
   count = var.control_plane_instance_count
 
-  ami               = data.aws_ami.centos7.id
+  ami               = data.aws_ami.caravan.id
   instance_type     = var.control_plane_machine_type
   subnet_id         = module.vpc.private_subnets[count.index]
   availability_zone = module.vpc.azs[count.index]
@@ -150,7 +145,7 @@ resource "aws_ebs_volume" "nomad_cluster_data" {
 }
 
 resource "aws_launch_template" "hashicorp_workers" {
-  image_id      = data.aws_ami.centos7.id
+  image_id      = data.aws_ami.caravan.id
   instance_type = var.worker_plane_machine_type
   key_name      = aws_key_pair.hashicorp_keypair.key_name
 
@@ -222,7 +217,7 @@ resource "aws_autoscaling_group" "hashicorp_workers" {
 resource "aws_instance" "monitoring" {
   count = var.enable_monitoring ? 1 : 0
 
-  ami           = data.aws_ami.centos7.id
+  ami           = data.aws_ami.caravan.id
   instance_type = var.monitoring_machine_type
   subnet_id     = module.vpc.private_subnets[count.index]
   key_name      = aws_key_pair.hashicorp_keypair.key_name
