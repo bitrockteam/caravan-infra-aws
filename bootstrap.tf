@@ -1,7 +1,7 @@
 module "caravan-bootstrap" {
   source                         = "git::https://github.com/bitrockteam/caravan-bootstrap?ref=refs/tags/v0.2.14"
   ssh_private_key                = chomp(tls_private_key.ssh_key.private_key_pem)
-  ssh_user                       = "centos"
+  ssh_user                       = var.ssh_username
   ssh_bastion_host               = aws_lb.hashicorp_nlb.dns_name
   ssh_bastion_private_key        = chomp(tls_private_key.ssh_key.private_key_pem)
   ssh_bastion_user               = "admin"
