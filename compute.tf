@@ -35,7 +35,7 @@ resource "local_file" "ssh_key" {
 
 resource "aws_key_pair" "hashicorp_keypair" {
   key_name   = "${var.prefix}_caravan_shared_sshkey"
-  public_key = tls_private_key.ssh_key.public_key_openssh
+  public_key = chomp(tls_private_key.ssh_key.public_key_openssh)
 }
 
 resource "aws_instance" "hashicorp_cluster" {
