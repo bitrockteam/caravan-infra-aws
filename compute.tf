@@ -24,8 +24,7 @@ data "aws_ami" "caravan" {
 }
 
 resource "tls_private_key" "ssh_key" {
-  algorithm = "RSA"
-  rsa_bits  = "4096"
+  algorithm = "ED25519"
 }
 
 resource "local_file" "ssh_key" {
