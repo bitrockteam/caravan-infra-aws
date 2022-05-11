@@ -37,7 +37,7 @@ variable "tfstate_region" {
 # AWS Compute
 variable "ami_filter_name" {
   type        = string
-  default     = "*caravan-*"
+  default     = "caravan-os-ubuntu-2004*"
   description = "Regexp to find AMI to use built with caravan-baking"
 }
 variable "control_plane_instance_count" {
@@ -194,6 +194,6 @@ variable "nomad_license_file" {
 }
 
 variable "ssh_username" {
-  type    = string
-  default = ""
+  type        = string
+  description = "centos or ubuntu ssh user for bootstrap"
 }

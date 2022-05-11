@@ -1,6 +1,7 @@
 #tfsec:ignore:AWS082
 module "vpc" {
-  source = "terraform-aws-modules/vpc/aws"
+  source  = "terraform-aws-modules/vpc/aws"
+  version = ">= 3.13.0"
 
   name = "${var.prefix}-vpc"
   cidr = var.vpc_cidr
@@ -144,6 +145,10 @@ resource "aws_acm_certificate" "cert" {
 
   tags = {
     Project = var.prefix
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
