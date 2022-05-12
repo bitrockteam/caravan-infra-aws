@@ -74,6 +74,8 @@ terraform apply --var-file aws.tfvars
 | [aws_ebs_volume.vault_cluster_data](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ebs_volume) | resource |
 | [aws_iam_instance_profile.control_plane](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile) | resource |
 | [aws_iam_instance_profile.worker_plane](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile) | resource |
+| [aws_iam_policy_attachment.ec2_ssm](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy_attachment) | resource |
+| [aws_iam_policy_attachment.ssm_core](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy_attachment) | resource |
 | [aws_iam_role.control_plane](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.worker_plane](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy.csi](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy) | resource |
@@ -151,7 +153,7 @@ terraform apply --var-file aws.tfvars
 | <a name="input_region"></a> [region](#input\_region) | AWS region to use | `string` | n/a | yes |
 | <a name="input_shared_credentials_file"></a> [shared\_credentials\_file](#input\_shared\_credentials\_file) | AWS credential file path | `string` | n/a | yes |
 | <a name="input_ssh_username"></a> [ssh\_username](#input\_ssh\_username) | centos or ubuntu ssh user for bootstrap | `string` | n/a | yes |
-| <a name="input_ami_filter_name"></a> [ami\_filter\_name](#input\_ami\_filter\_name) | Regexp to find AMI to use built with caravan-baking | `string` | `"caravan-os-ubuntu-2004*"` | no |
+| <a name="input_ami_filter_name"></a> [ami\_filter\_name](#input\_ami\_filter\_name) | Regexp to find AMI to use built with caravan-baking | `string` | `"caravan-os-ubuntu-2204*"` | no |
 | <a name="input_ca_certs"></a> [ca\_certs](#input\_ca\_certs) | Fake certificates from staging Let's Encrypt | <pre>map(object({<br>    filename = string<br>    pemurl   = string<br>  }))</pre> | <pre>{<br>  "stg-int-r3": {<br>    "filename": "letsencrypt-stg-int-r3.pem",<br>    "pemurl": "https://letsencrypt.org/certs/staging/letsencrypt-stg-int-r3.pem"<br>  },<br>  "stg-root-x1": {<br>    "filename": "letsencrypt-stg-root-x1.pem",<br>    "pemurl": "https://letsencrypt.org/certs/staging/letsencrypt-stg-root-x1.pem"<br>  }<br>}</pre> | no |
 | <a name="input_consul_license_file"></a> [consul\_license\_file](#input\_consul\_license\_file) | Path to Consul Enterprise license | `string` | `null` | no |
 | <a name="input_control_plane_instance_count"></a> [control\_plane\_instance\_count](#input\_control\_plane\_instance\_count) | Control plane instances number | `number` | `3` | no |

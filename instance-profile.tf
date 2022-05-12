@@ -45,6 +45,18 @@ resource "aws_iam_role" "worker_plane" {
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
+resource "aws_iam_policy_attachment" "ssm_core" {
+  name       = "ssm core"
+  roles      = [aws_iam_role.control_plane.id, aws_iam_role.worker_plane.id]
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_policy_attachment" "ec2_ssm" {
+  name       = "ec2 ssm"
+  roles      = [aws_iam_role.control_plane.id, aws_iam_role.worker_plane.id]
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
+}
+
 // aws_iam_instance_profile
 resource "aws_iam_instance_profile" "control_plane" {
   name = "${var.prefix}-control-plane-${random_pet.env.id}"

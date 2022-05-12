@@ -37,7 +37,7 @@ variable "tfstate_region" {
 # AWS Compute
 variable "ami_filter_name" {
   type        = string
-  default     = "caravan-os-ubuntu-2004*"
+  default     = "caravan-os-ubuntu-2204*"
   description = "Regexp to find AMI to use built with caravan-baking"
 }
 variable "control_plane_instance_count" {
