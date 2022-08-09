@@ -1,11 +1,16 @@
 repos:
-  - repo: git://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.50.0
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.74.1
     hooks:
       - id: terraform_fmt
       - id: terraform_docs
         args: ['--args=--sort-by required']
       - id: terraform_tflint
         args: [ '--args=--config=__GIT_WORKING_DIR__/.tflint.hcl' ]
-      # - id: terraform_tfsec
+      - id: terraform_tfsec
+        args:
+          # - --args=--force-all-dirs
+          # - --args=--exclude-downloaded-modules
+          - --args=--concise-output
+          - --args=--config-file=__GIT_WORKING_DIR__/.tfsec.json
       - id: terraform_validate

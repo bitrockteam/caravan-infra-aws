@@ -24,7 +24,7 @@ resource "aws_security_group" "allow_cluster_basics" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:AWS009
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-ec2-no-public-egress-sgr
   }
 
   tags = {
@@ -99,6 +99,7 @@ resource "aws_security_group" "internal_vault" {
     from_port   = 8200
     to_port     = 8200
     protocol    = "tcp"
+    description = "Allow Vault API Internal VPC"
     cidr_blocks = [module.vpc.vpc_cidr_block]
   }
 

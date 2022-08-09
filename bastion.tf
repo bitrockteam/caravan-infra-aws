@@ -30,6 +30,10 @@ resource "aws_launch_configuration" "bastion-service-host" {
     encrypted = true
   }
 
+  metadata_options {
+    http_tokens = "required"
+  }
+
   lifecycle {
     create_before_destroy = true
   }

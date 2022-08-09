@@ -73,6 +73,8 @@ resource "aws_iam_role_policy" "vault_kms_unseal" {
   role   = aws_iam_role.control_plane.id
   policy = data.aws_iam_policy_document.vault_kms_unseal.json
 }
+
+# tfsec:ignore:aws-iam-no-policy-wildcards
 resource "aws_iam_role_policy" "vault_aws_auth" {
   name = "${var.prefix}-control-plane-policy"
   role = aws_iam_role.control_plane.name
@@ -115,6 +117,7 @@ resource "aws_iam_role_policy" "vault_client" {
   policy = data.aws_iam_policy_document.vault_client.json
 }
 
+# tfsec:ignore:aws-iam-no-policy-wildcards
 resource "aws_iam_role_policy" "csi" {
   count  = var.enable_nomad ? 1 : 0
   name   = "${var.prefix}-ebs-csi-client"
@@ -149,6 +152,7 @@ resource "aws_iam_role_policy" "csi" {
 EOF
 }
 
+# tfsec:ignore:aws-iam-no-policy-wildcards
 resource "aws_iam_role_policy" "docker_pull" {
   policy = <<-EOT
 {

@@ -53,6 +53,7 @@ resource "aws_instance" "hashicorp_cluster" {
     delete_on_termination = true
     volume_size           = var.volume_root_size
     volume_type           = var.volume_type
+    encrypted             = true
     tags = {
       Name    = format("clustnode-%.2d", count.index + 1)
       Project = var.prefix
@@ -97,6 +98,7 @@ resource "aws_ebs_volume" "vault_cluster_data" {
   availability_zone = aws_instance.hashicorp_cluster[count.index].availability_zone
   size              = var.volume_data_size
   type              = var.volume_type
+  encrypted         = true
 
   tags = {
     Name = format("vault-data-%.2d", count.index + 1)
@@ -117,6 +119,7 @@ resource "aws_ebs_volume" "consul_cluster_data" {
   availability_zone = aws_instance.hashicorp_cluster[count.index].availability_zone
   size              = var.volume_data_size
   type              = var.volume_type
+  encrypted         = true
 
   tags = {
     Name = format("consul-data-%.2d", count.index + 1)
@@ -137,6 +140,7 @@ resource "aws_ebs_volume" "nomad_cluster_data" {
   availability_zone = aws_instance.hashicorp_cluster[count.index].availability_zone
   size              = var.volume_data_size
   type              = var.volume_type
+  encrypted         = true
 
   tags = {
     Name = format("nomad-data-%.2d", count.index + 1)
@@ -158,7 +162,12 @@ resource "aws_launch_template" "hashicorp_workers" {
       delete_on_termination = true
       volume_size           = var.volume_size
       volume_type           = var.volume_type
+      encrypted             = true
     }
+  }
+
+  metadata_options {
+    http_tokens = "required"
   }
 
   vpc_security_group_ids = concat([aws_security_group.allow_cluster_basics.id,
@@ -227,6 +236,7 @@ resource "aws_instance" "monitoring" {
     delete_on_termination = true
     volume_size           = var.volume_size
     volume_type           = var.volume_type
+    encrypted             = true
     tags = {
       Name    = "monitoring"
       Project = var.prefix
