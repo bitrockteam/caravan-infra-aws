@@ -12,7 +12,7 @@ module "terraform_acme_le" {
     aws_route53_record.hashicorp_zone_ns
   ]
 
-  source       = "git::https://github.com/bitrockteam/caravan-acme-le?ref=refs/tags/v0.0.1"
+  source       = "git::https://github.com/bitrockteam/caravan-acme-le?ref=refs/tags/v0.0.14"
   common_name  = "${var.prefix}.${var.external_domain}"
   dns_provider = "aws"
   private_key  = tls_private_key.cert_private_key.private_key_pem
