@@ -1,5 +1,5 @@
 module "caravan-bootstrap" {
-  source                         = "git::https://github.com/bitrockteam/caravan-bootstrap?ref=refs/tags/v0.2.19"
+  source                         = "git::https://github.com/bitrockteam/caravan-bootstrap?ref=refs/tags/v0.2.20"
   ssh_private_key                = tls_private_key.ssh_key.private_key_openssh
   ssh_user                       = var.ssh_username
   ssh_bastion_host               = aws_lb.hashicorp_nlb.dns_name
