@@ -227,7 +227,7 @@ resource "aws_lb_target_group" "nomad" {
   }
 }
 resource "aws_lb_target_group" "ingress" {
-  name     = "${var.prefix}-target-group-ingress"
+  name     = "${var.prefix}-target-group-ingres"
   port     = 8080
   protocol = "HTTP"
   vpc_id   = module.vpc.vpc_id
