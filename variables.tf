@@ -102,7 +102,7 @@ variable "volume_size" {
 }
 variable "control_plane_machine_type" {
   type        = string
-  default     = "t3.micro"
+  default     = "t3a.small"
   description = "Control plane instance machine type"
 }
 variable "worker_plane_machine_type" {
